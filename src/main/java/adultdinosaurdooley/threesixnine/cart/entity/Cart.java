@@ -1,0 +1,47 @@
+package adultdinosaurdooley.threesixnine.cart.entity;
+
+import adultdinosaurdooley.threesixnine.users.entity.User;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Entity
+public class Cart {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int count; // 카트에 담긴 상품 개수
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    User user;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<CartProduct> cartProducts = new ArrayList<>();
+
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    private LocalDate createDate; // 날짜
+
+    @PrePersist
+    public void createDate() {
+        this.createDate = LocalDate.now();
+    }
+
+    public static Cart createCart(User user) {
+        Cart cart = new Cart();
+        cart.user = user;
+        cart.count = 0;
+
+        return cart;
+    }
+}
