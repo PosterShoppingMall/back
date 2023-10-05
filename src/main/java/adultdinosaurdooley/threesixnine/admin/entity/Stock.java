@@ -1,16 +1,17 @@
 package adultdinosaurdooley.threesixnine.admin.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@Builder
 @Table(name = "stock")
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Stock {
 
     @Id
@@ -23,8 +24,11 @@ public class Stock {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(nullable = false)
-    private int stock_amount; //상품 재고
+    @Column(name = "stock_amount",nullable = false)
+    private int stockAmount; //상품 재고
 
-    private int sell_amount; //판매 수량
+    @Column(name = "sell_amount",nullable = false)
+    private int sellAmount; //판매 수량
+
+
 }
