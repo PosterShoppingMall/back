@@ -19,13 +19,14 @@ public class ProductDTO {
     private String productSize;
     private String productContents;
     private ProductSaleStatus saleStatus;
-    private List<ProductImageDto> productImages;
+    //private List<ProductImageDto> productImages;
     private StockDTO stockDTO;
 
     @Builder
     public ProductDTO(
             Long id, String productName, String productSize, int productPrice, String category, String productContents, ProductSaleStatus saleStatus,
-            List<ProductImageDto> productImages, StockDTO stockDTO) {
+            //List<ProductImageDto> productImages,
+            StockDTO stockDTO) {
         this.id = id;
         this.productName = productName;
         this.productSize = productSize;
@@ -33,7 +34,7 @@ public class ProductDTO {
         this.category = category;
         this.productContents = productContents;
         this.saleStatus = saleStatus;
-        this.productImages = productImages;
+        //this.productImages = productImages;
         this.stockDTO = stockDTO;
     }
 
