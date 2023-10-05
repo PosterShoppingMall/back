@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.users.dto;
 
-import adultdinosaurdooley.threesixnine.users.entity.UserDetail;
+import adultdinosaurdooley.threesixnine.users.entity.User;
 import lombok.*;
 
 @Builder
@@ -11,19 +11,27 @@ import lombok.*;
 
 public class MyPage {
 
-    private String userName;
+    private Long userId;
+    private String name;
     private String email;
+    private String password;
     private String phoneNumber;
-    private String address;
-    private String addressDetail;
+    private String postcode;
+    private String roadAddress;
+    private String detailAddress;
+    private String userImg;
 
-    public static MyPage fromEntity(UserDetail userDetail){
+    public static MyPage fromEntity(User user){
         return MyPage.builder()
-                .userName(userDetail.getUserName())
-                .email(userDetail.getUser().getEmail())
-                .phoneNumber(userDetail.getPhoneNumber())
-                .address(userDetail.getAddress())
-                .addressDetail(userDetail.getAddressDetail())
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .phoneNumber(user.getPhoneNumber())
+                .postcode(user.getPostcode())
+                .roadAddress(user.getRoadAddress())
+                .detailAddress(user.getDetailAddress())
+                .userImg(user.getUserImg())
                 .build();
     }
 }

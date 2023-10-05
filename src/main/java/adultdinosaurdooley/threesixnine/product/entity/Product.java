@@ -21,25 +21,25 @@ public class Product {
     private Long id;
 
     @JoinColumn(name="product_name")
-    private int name;
+    private String name;
 
     @OneToOne(mappedBy = "product")
     private Stock stock;
 
     @JoinColumn(name="category")
-    private int category;
+    private String category;
 
     @JoinColumn(name="product_size")
-    private int size;
+    private String size;
 
     @JoinColumn(name="product_contents")
-    private int contents;
+    private String contents;
 
     @JoinColumn(name="product_price")
-    private int price;
+    private Integer price;
 
     @JoinColumn(name="sale_status")
-    private int saleStatus;
+    private String saleStatus;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate createDate; // 날짜

@@ -9,9 +9,11 @@ import lombok.*;
 @Builder
 public class UpdateMyPage {
 
-    private String userName;
+    private String name;
     private String password;
-    private String address;
-    private String addressDetail;
     private String phoneNumber;
+    private String postcode;
+    private String roadAddress;
+    private String detailAddress;
+    private String userImg;
 }

@@ -15,14 +15,14 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Object> getMyPage(@PathVariable("userId") Long userId){
+    @GetMapping("/{user_id}")
+    public ResponseEntity<Object> getMyPage(@PathVariable("user_id") Long userId){
 //        Long userId = 1L;
         return ResponseEntity.ok(userService.getMyPage(userId));
     }
 
-    @PatchMapping("/{userId}")
-    public ResponseEntity<Object>updateMyPage(@PathVariable("id") Long userId,@RequestPart UpdateMyPage updateMyPage){
+    @PutMapping("/{user_id}")
+    public ResponseEntity<Object>updateMyPage(@PathVariable("user_id") Long userId,@RequestPart UpdateMyPage updateMyPage){
 //        Long userId = 1L;
         return ResponseEntity.ok(userService.updateMyPage(userId,updateMyPage));
     }

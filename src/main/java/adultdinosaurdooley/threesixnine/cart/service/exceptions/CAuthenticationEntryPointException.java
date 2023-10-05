@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.users.service.exceptions;
+package adultdinosaurdooley.threesixnine.cart.service.exceptions;
 
 public class CAuthenticationEntryPointException extends RuntimeException {
     public CAuthenticationEntryPointException(String msg, Throwable t) {

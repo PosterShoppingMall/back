@@ -28,28 +28,7 @@ public class CartProduct {
     private Product product;
 
     @JoinColumn(name="cart_cnt")
-    private int count; // 카트에 담긴 상품 개수
+    private int cartCnt; // 카트에 담긴 상품 개수
 
-
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private LocalDate createDate; // 날짜
-
-    @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
-    public void createDate() {
-        this.createDate = LocalDate.now();
-    }
-
-    public static CartProduct createCartProduct(Cart cart, Product product, int count){
-        CartProduct cartProduct = new CartProduct();
-        cartProduct.setCart(cart);
-        cartProduct.setProduct(product);
-        cartProduct.setCount(count);
-
-        return cartProduct;
-    }
-
-    public void addCount(int count){
-        this.count += count;
-    }
 }
 

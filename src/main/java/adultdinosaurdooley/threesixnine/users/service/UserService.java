@@ -1,11 +1,10 @@
 package adultdinosaurdooley.threesixnine.users.service;
 
 import adultdinosaurdooley.threesixnine.users.entity.User;
-import adultdinosaurdooley.threesixnine.users.service.exceptions.NotFoundException;
+import adultdinosaurdooley.threesixnine.users.service.exception.UserErrorCode;
+import adultdinosaurdooley.threesixnine.users.service.exception.UserException;
 import adultdinosaurdooley.threesixnine.users.dto.MyPage;
 import adultdinosaurdooley.threesixnine.users.dto.UpdateMyPage;
-import adultdinosaurdooley.threesixnine.users.entity.UserDetail;
-import adultdinosaurdooley.threesixnine.users.repository.UserDetailRepository;
 import adultdinosaurdooley.threesixnine.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,26 +20,25 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserDetailRepository userDetailRepository;
 
-
-    public User findUser(Long id){
-        return userRepository.findById(id).get();
-    }
+//    public User findByUserId(Long id){
+//        return userRepository.findById(id).get();
+//    }
 
     public MyPage getMyPage(Long userId) {
-        UserDetail userDetail = userDetailRepository.findByUserId(userId);
-        if (userId == null) {
-            throw new NotFoundException("USER 를 찾을 수가 없습니다.");
-        }
-        return MyPage.fromEntity(userDetail);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+        return MyPage.fromEntity(user);
     }
 
     @Transactional
     public String updateMyPage(Long userId, UpdateMyPage updateMyPage) {
 
+        validatedPhoneNumber(updateMyPage.getPhoneNumber());
+        validatedPassword(updateMyPage.getPassword());
+
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new NotFoundException("USER 를 찾을 수가 없습니다."));
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
 //        //기존에 있던 파일 삭제
 //        if(user.getImageUrl() != null) {
@@ -51,11 +49,23 @@ public class UserService {
 //
 //        user.setImageUrl(image);
 
-        UserDetail userDetail = userDetailRepository.findByUserId(userId);//회원의 ID로 접근 권한 처리
-
-        UserDetail.update(userDetail,updateMyPage);
-
         User.update(user,updateMyPage);
-        return "회원수정이 성공적으로 완료되었습니다";
+        return "회원수정 완료";
+    }
+
+    public void validatedPhoneNumber(String phoneNumber) {
+        if (phoneNumber.length() != 11) {
+            throw new UserException(UserErrorCode.INVALID_PHONE_NUMBER);
+        }
+    }
+
+    public void validatedPassword(String password) {
+        if (password.length() < 8) {
+            throw new UserException(UserErrorCode.INVALID_PASSWORD);
+        }
+        if (!password.matches(
+                "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$")) {
+            throw new UserException(UserErrorCode.INVALID_PHONE_NUMBER_PATTERN);
+        }
     }
 }
