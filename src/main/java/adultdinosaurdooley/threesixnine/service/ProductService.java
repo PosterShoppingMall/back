@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    // 전체 이미지, sort 작업 필요
+    // 전체 이미지
     public ResponseEntity<ProductDetailDTO> findProductById(Long productId) {
         Optional<Product> byId = productRepository.findById(productId);
         Product product = byId.get();
@@ -36,33 +36,46 @@ public class ProductService {
         return ResponseEntity.status(200).body(productDetailDTO);
     }
 
-    // 페이징 작업 중 (sort)
-    public ResponseEntity<List<ProductListDTO>> findAllProductList(int page) {
+    public ResponseEntity<List<ProductListDTO>> findAllProductList(int size, int page, String sort) {
+        Pageable pageable = setPageable(size, page, sort);
         Page<Product> productList;
-        Pageable pageable = PageRequest.of(page, 20);
-        productList = productRepository.findByOrderByIdDesc(pageable);
+        productList = productRepository.findProducts(pageable);
         return ResponseEntity.status(200).body(convertToDTOList(productList));
     }
 
-    public ResponseEntity<List<ProductListDTO>> findProductByKeyword(String keyword, int page) {
-        Page<Product> productList;
-        Pageable pageable = PageRequest.of(page, 20);
-        productList = productRepository.findByProductNameContainingOrderByIdDesc(pageable, keyword);
+    public ResponseEntity<List<ProductListDTO>> findProductByKeyword(String keyword, int size, int page, String sort) {
+        Pageable pageable = setPageable(size, page, sort);
+        Page<Product> productList = productRepository.findByProductNameContaining(pageable, keyword);
         return ResponseEntity.status(200).body(convertToDTOList(productList));
     }
 
-    public ResponseEntity<List<ProductListDTO>> findBestProductList(int page) {
+    public ResponseEntity<List<ProductListDTO>> findBestProductList(int size, int page) {
         Page<Product> productList;
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, size);
         productList = productRepository.findTop30ByOrderBySellAmountDesc(pageable);
         return ResponseEntity.status(200).body(convertToDTOList(productList));
     }
 
-    public ResponseEntity<List<ProductListDTO>> findProductListByCategory(String category, int page) {
+    public ResponseEntity<List<ProductListDTO>> findProductListByCategory(String category, int size, int page, String sort) {
+        Pageable pageable = setPageable(size, page, sort);
         Page<Product> productList;
-        Pageable pageable = PageRequest.of(page, 20);
-        productList = productRepository.findByCategoryOrderByIdDesc(pageable, category);
+        productList = productRepository.findByCategory(pageable, category);
         return ResponseEntity.status(200).body(convertToDTOList(productList));
+    }
+
+    private Pageable setPageable(int size, int page, String sort) {
+        Pageable pageable;
+        Sort commonSort = Sort.by("id").descending();
+        if (sort.equals("priceAsc")) {
+            pageable = PageRequest.of(page, size, Sort.by("productPrice").ascending().and(commonSort));
+        } else if (sort.equals("priceDesc")) {
+            pageable = PageRequest.of(page, size, Sort.by("productPrice").descending().and(commonSort));
+        } else if (sort.equals("best")) {
+            pageable = PageRequest.of(page, size, Sort.by("s.sellAmount").descending().and(commonSort));
+        } else {
+            pageable = PageRequest.of(page, size, commonSort);
+        }
+        return pageable;
     }
 
 

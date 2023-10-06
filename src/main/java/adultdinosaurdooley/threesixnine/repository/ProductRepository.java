@@ -11,16 +11,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     // 검색
-    Page<Product> findByProductNameContainingOrderByIdDesc(Pageable pageable, String keyword);
+    @Query("SELECT p FROM Product p INNER JOIN p.stock s")
+    Page<Product> findByProductNameContaining(Pageable pageable, String keyword);
 
     // 전체 조회
-    Page<Product> findByOrderByIdDesc(Pageable pageable);
+    @Query("SELECT p FROM Product p INNER JOIN p.stock s")
+    Page<Product> findProducts(Pageable pageable);
 //    @Query("SELECT p FROM Product p INNER JOIN p.stock s order by s.sellAmount")
 //    List<Product> findByOrderBySellAmount();
 
 
     // 카테고리 조회
-    Page<Product> findByCategoryOrderByIdDesc(Pageable pageable, String category);
+    Page<Product> findByCategory(Pageable pageable, String category);
 //    @Query("SELECT p FROM Product p INNER JOIN p.stock s where p.category = :category order by s.sellAmount")
 //    List<Product> findByCategoryOrderBySellAmount(@Param("category") String category);
 

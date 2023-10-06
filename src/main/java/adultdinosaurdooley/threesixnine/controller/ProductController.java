@@ -28,22 +28,26 @@ public class ProductController {
     @GetMapping("/product")
     public ResponseEntity<List<ProductListDTO>> viewProductList(
             @RequestParam(name = "category", required = false, defaultValue = "all") String category,
-//            @RequestParam(name = "sort", required = false, defaultValue = "id-desc") String sort,
+            @RequestParam(name = "size", required = false, defaultValue = "20") int size,
+            @RequestParam(name = "sort", required = false, defaultValue = "") String sort,
             @RequestParam(defaultValue = "1") int page) {
         if (category.equals("all")) {
-            return productService.findAllProductList(page - 1);
+            return productService.findAllProductList(size, page - 1, sort);
         } else if (category.equals("best")) {
-            return productService.findBestProductList(page - 1);
+            return productService.findBestProductList(size, page - 1);
         } else {
-            return productService.findProductListByCategory(category, page - 1);
+            return productService.findProductListByCategory(category, size, page - 1, sort);
         }
     }
 
     @GetMapping("/product/search")
     public ResponseEntity<List<ProductListDTO>> searchProductByNameList(
             @RequestParam String keyword,
+            @RequestParam(name = "sort", required = false, defaultValue = "") String sort,
+            @RequestParam(name = "size", required = false, defaultValue = "20") int size,
             @RequestParam(defaultValue = "1") int page) {
-        return productService.findProductByKeyword(keyword, page - 1);
+
+        return productService.findProductByKeyword(keyword, size, page - 1, sort);
     }
 
 }
