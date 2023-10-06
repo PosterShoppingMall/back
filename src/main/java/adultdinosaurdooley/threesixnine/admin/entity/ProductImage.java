@@ -1,7 +1,6 @@
 package adultdinosaurdooley.threesixnine.admin.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 @Table(name = "product_img")
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProductImage {
     @Id
     @Column(name = "product_img_id")
@@ -20,22 +20,18 @@ public class ProductImage {
     @Column(nullable = false)
     private String imagePath; // image 경로
 
-//    @Lob
-//    @Column // 원하는 길이로 설정
-//    private List<String> images; // 썸네일
-
-
-
-//    private String image2;
-//
-//    private String image3;
-//
-//    private String image4;
-//
-//    private String image5;
+    @Column(nullable = false)
+    private int imageNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
+
+    
+    public ProductImage(String imagePath, Product product){
+        this.imagePath = imagePath;
+        this.product = product;
+    }
+
 
 }

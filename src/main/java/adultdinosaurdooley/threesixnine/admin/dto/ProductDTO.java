@@ -1,8 +1,10 @@
 package adultdinosaurdooley.threesixnine.admin.dto;
 
 import adultdinosaurdooley.threesixnine.admin.entity.constant.ProductSaleStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -12,6 +14,7 @@ import java.util.List;
 @ToString
 public class ProductDTO {
 
+
     private Long id;
     private String productName;
     private int productPrice;
@@ -19,14 +22,20 @@ public class ProductDTO {
     private String productSize;
     private String productContents;
     private ProductSaleStatus saleStatus;
-    //private List<ProductImageDto> productImages;
+    private List<String> productImages;
     private StockDTO stockDTO;
+
+    //등록시간 format
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime updatedAt;
 
     @Builder
     public ProductDTO(
             Long id, String productName, String productSize, int productPrice, String category, String productContents, ProductSaleStatus saleStatus,
-            //List<ProductImageDto> productImages,
-            StockDTO stockDTO) {
+            List<String> productImages, StockDTO stockDTO , LocalDateTime createdAt, LocalDateTime updatedAt) {
+
         this.id = id;
         this.productName = productName;
         this.productSize = productSize;
@@ -34,9 +43,26 @@ public class ProductDTO {
         this.category = category;
         this.productContents = productContents;
         this.saleStatus = saleStatus;
-        //this.productImages = productImages;
+        this.productImages = productImages;
         this.stockDTO = stockDTO;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+
     }
 
 
+    @Builder
+    public ProductDTO(ProductDTO productDTO, List<String> productImages) {
+        this.id = productDTO.getId();
+        this.productName = productDTO.getProductName();
+        this.productSize = productDTO.getProductSize();
+        this.productPrice = productDTO.getProductPrice();
+        this.category = productDTO.getCategory();
+        this.productContents = productDTO.getProductContents();
+        this.saleStatus = productDTO.getSaleStatus();
+        this.productImages = productImages;
+        this.stockDTO = productDTO.getStockDTO();
+        this.createdAt =productDTO.getCreatedAt();
+        this.updatedAt = productDTO.getUpdatedAt();
+    }
 }

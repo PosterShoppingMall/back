@@ -30,5 +30,10 @@ public class Stock {
     @Column(name = "sell_amount",nullable = false)
     private int sellAmount; //판매 수량
 
+    public Stock(Product product, int stockAmount, int sellAmount){
+        this.product =product;
+        this.stockAmount =stockAmount;
+        this.sellAmount = sellAmount;
+    }
 
 }
