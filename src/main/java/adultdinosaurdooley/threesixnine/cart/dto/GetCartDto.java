@@ -3,22 +3,20 @@ package adultdinosaurdooley.threesixnine.cart.dto;
 import adultdinosaurdooley.threesixnine.cart.entity.Cart;
 import lombok.*;
 
-import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Optional;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartCheck {
+public class GetCartDto {
 
     private Long cartId;
     private List<CartProduct> cartProducts;
 
-    public static CartCheck from(Cart cart, List<CartProduct> cartProducts) {
-        return CartCheck.builder()
+    public static GetCartDto from(Cart cart, List<CartProduct> cartProducts) {
+        return GetCartDto.builder()
                 .cartId(cart.getId())
                 .cartProducts(cartProducts)
                 .build();
@@ -37,6 +35,5 @@ public class CartCheck {
         private Integer cartProductAmount;
     }
 
-    private static DecimalFormat formatter = new DecimalFormat("###,###");
 }
 

@@ -13,22 +13,23 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@Table(name ="cartProduct")
 public class CartProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="cart_product_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cart_id")
     private Cart cart;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
     private Product product;
 
-    @JoinColumn(name="cart_cnt")
-    private int cartCnt; // 카트에 담긴 상품 개수
-
+    @Column(name="cart_cnt", nullable = false)
+    private Integer cartCnt;
 }
 

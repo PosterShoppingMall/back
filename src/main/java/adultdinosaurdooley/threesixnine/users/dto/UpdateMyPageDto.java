@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateMyPage {
+public class UpdateMyPageDto {
 
     private String name;
     private String password;

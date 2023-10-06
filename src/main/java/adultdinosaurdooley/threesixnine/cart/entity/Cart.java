@@ -20,7 +20,11 @@ import java.util.List;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "cart_id")
+    private Long id;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartProduct> cartProducts = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")

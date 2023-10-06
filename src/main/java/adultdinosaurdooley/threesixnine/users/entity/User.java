@@ -1,10 +1,9 @@
 package adultdinosaurdooley.threesixnine.users.entity;
 
 import adultdinosaurdooley.threesixnine.cart.entity.Cart;
-import adultdinosaurdooley.threesixnine.users.dto.UpdateMyPage;
+import adultdinosaurdooley.threesixnine.users.dto.UpdateMyPageDto;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -44,7 +43,7 @@ public class User {
     @Column(name = "detail_address")
     private String detailAddress;
 
-    @Column(name = "user_img", nullable = false)
+    @Column(name = "user_img")
     private String userImg;
 
     @CreatedDate
@@ -55,7 +54,7 @@ public class User {
     private Cart cart;
 
 
-    public static void update(User user, UpdateMyPage updateMyPage){
+    public static void update(User user, UpdateMyPageDto updateMyPage){
         user.setPassword(updateMyPage.getPassword());
         user.setName(updateMyPage.getName());
         user.setPhoneNumber(updateMyPage.getPhoneNumber());

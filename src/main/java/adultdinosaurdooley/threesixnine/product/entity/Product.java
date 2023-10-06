@@ -20,25 +20,25 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
 
-    @JoinColumn(name="product_name")
+    @Column(name="product_name")
     private String name;
 
     @OneToOne(mappedBy = "product")
     private Stock stock;
 
-    @JoinColumn(name="category")
+    @Column(name="category")
     private String category;
 
-    @JoinColumn(name="product_size")
+    @Column(name="product_size")
     private String size;
 
-    @JoinColumn(name="product_contents")
+    @Column(name="product_contents")
     private String contents;
 
-    @JoinColumn(name="product_price")
+    @Column(name="product_price")
     private Integer price;
 
-    @JoinColumn(name="sale_status")
+    @Column(name="sale_status")
     private String saleStatus;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")

@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class MyPage {
+public class MyPageDto {
 
     private Long userId;
     private String name;
@@ -21,8 +21,8 @@ public class MyPage {
     private String detailAddress;
     private String userImg;
 
-    public static MyPage fromEntity(User user){
-        return MyPage.builder()
+    public static MyPageDto fromEntity(User user){
+        return MyPageDto.builder()
                 .userId(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
