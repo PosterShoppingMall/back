@@ -16,7 +16,7 @@ import java.util.Map;
 @Configuration
 @EnableJpaRepositories(
 
-        basePackages = {"adultdinosaurdooley.threesixnine.users","adultdinosaurdooley.threesixnine.cart","adultdinosaurdooley.threesixnine.product"},
+        basePackages = {"adultdinosaurdooley.threesixnine.users","adultdinosaurdooley.threesixnine.cart","adultdinosaurdooley.threesixnine.product","adultdinosaurdooley.threesixnine.order"},
         entityManagerFactoryRef = "entityManagerFactoryBean",
         transactionManagerRef =  "tmJpa"
 )
@@ -26,7 +26,7 @@ public class JpaConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("adultdinosaurdooley.threesixnine.users","adultdinosaurdooley.threesixnine.cart","adultdinosaurdooley.threesixnine.product");
+        em.setPackagesToScan("adultdinosaurdooley.threesixnine.users","adultdinosaurdooley.threesixnine.cart","adultdinosaurdooley.threesixnine.product","adultdinosaurdooley.threesixnine.order");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

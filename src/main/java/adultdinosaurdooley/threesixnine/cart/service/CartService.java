@@ -25,11 +25,11 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartProductRepository cartProductRepository;
 
-    public GetCartDto getCart(Long cartId, Pageable pageable) {
+    public GetCartDto getCart(Long userId, Pageable pageable) {
 
         // 1. 주어진 cartId를 사용하여 카트를 검증
-        Cart validateCart = validateCart(cartId);
-        List<CartProduct> validateCartProduct = cartProductRepository.findByCartId(cartId);
+        Cart validateCart = validateCart(userId);
+        List<CartProduct> validateCartProduct = cartProductRepository.findByCartId(userId);
         // 2. 페이지네이션을 이용하여 해당 카트에 있는 제품 목록을 가져옵니다.
         Page<CartProduct> cartProductPage = cartProductRepository.findAllByCartId(validateCart.getId(), pageable);
         // 3. 카트에 있는 제품들의 총 가격을 계산합니다.
