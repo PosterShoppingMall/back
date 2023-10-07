@@ -1,8 +1,10 @@
 package adultdinosaurdooley.threesixnine.service;
 
 import adultdinosaurdooley.threesixnine.dto.ProductDetailDTO;
+import adultdinosaurdooley.threesixnine.dto.ProductImageDto;
 import adultdinosaurdooley.threesixnine.dto.ProductListDTO;
 import adultdinosaurdooley.threesixnine.entity.Product;
+import adultdinosaurdooley.threesixnine.entity.ProductImage;
 import adultdinosaurdooley.threesixnine.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,10 +24,21 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    // 전체 이미지
+    // 판매상태에 따른 비노출화, 페이지 인포 json 넘기기, 메인페이지 작업
+
     public ResponseEntity<ProductDetailDTO> findProductById(Long productId) {
         Optional<Product> byId = productRepository.findById(productId);
         Product product = byId.get();
+        List<ProductImageDto> productImageDtoList = new ArrayList<>();
+        for (ProductImage productImage : product.getProductImages()){
+            ProductImageDto imageDto = ProductImageDto
+                    .builder()
+                    .imageNum(productImage.getImageNum())
+                    .imagePath(productImage.getImagePath())
+                    .build();
+            productImageDtoList.add(imageDto);
+        }
+
         ProductDetailDTO productDetailDTO = ProductDetailDTO
                 .builder()
                 .id(product.getId())
@@ -32,6 +46,7 @@ public class ProductService {
                 .productSize(product.getProductSize())
                 .productContents(product.getProductContents())
                 .productPrice(product.getProductPrice())
+                .productImages(productImageDtoList)
                 .build();
         return ResponseEntity.status(200).body(productDetailDTO);
     }
@@ -87,11 +102,13 @@ public class ProductService {
     }
 
     public ProductListDTO convertToDTO(Product product) {
+        String url = String.valueOf(productRepository.findById(product.getId()).get().getProductImages().get(0).getImagePath());
         ProductListDTO dto = ProductListDTO
                 .builder()
                 .id(product.getId())
                 .productName(product.getProductName())
                 .productPrice(product.getProductPrice())
+                .imageUrl(url)
                 .stockAmount(product.getStock().getStockAmount())
                 .build();
         return dto;

@@ -17,14 +17,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // 전체 조회
     @Query("SELECT p FROM Product p INNER JOIN p.stock s")
     Page<Product> findProducts(Pageable pageable);
-//    @Query("SELECT p FROM Product p INNER JOIN p.stock s order by s.sellAmount")
-//    List<Product> findByOrderBySellAmount();
-
 
     // 카테고리 조회
     Page<Product> findByCategory(Pageable pageable, String category);
-//    @Query("SELECT p FROM Product p INNER JOIN p.stock s where p.category = :category order by s.sellAmount")
-//    List<Product> findByCategoryOrderBySellAmount(@Param("category") String category);
 
     // 베스트 카테고리
     @Query("SELECT p FROM Product p INNER JOIN p.stock s ORDER BY s.sellAmount DESC")

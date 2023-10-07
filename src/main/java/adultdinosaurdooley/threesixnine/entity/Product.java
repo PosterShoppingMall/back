@@ -6,7 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Builder
 @Getter
@@ -16,12 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "product")
 public class Product extends BaseTimeEntity{
+
     @Id
     @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //상품코드
 
-    @Column(name = "product_name", nullable = false , length=100)
+    @Column(name = "product_name",nullable = false , length=100)
     private String productName; //상품이름
 
     @Column(name = "product_price",nullable = false)
@@ -33,13 +33,15 @@ public class Product extends BaseTimeEntity{
     @Column(name = "product_size",nullable = false)
     private String productSize; //상품 사이즈
 
-    @Lob
+
     @Column(name = "product_contents",nullable = false)
     private String productContents; //상품 상세설명
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "sale_status",nullable = false)
     private ProductSaleStatus saleStatus; //상품 판매 상태
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductImage> productImages = new ArrayList<>();
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Stock stock;

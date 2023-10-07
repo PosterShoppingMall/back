@@ -2,6 +2,8 @@ package adultdinosaurdooley.threesixnine.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @ToString
 @NoArgsConstructor
@@ -13,6 +15,5 @@ public class ProductDetailDTO {
     private int productPrice;
     private String productSize;
     private String productContents;
-
-    //private List<ProductImageDto> productImages;
+    private List<ProductImageDto> productImages;
 }

@@ -11,6 +11,6 @@ public class ProductListDTO {
     private Long id;
     private String productName;
     private int productPrice;
-//    private String imageUrl;
+    private String imageUrl;
     private int stockAmount;
 }
