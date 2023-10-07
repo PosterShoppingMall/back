@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    // 판매상태에 따른 비노출화, 페이지 인포 json 넘기기, 메인페이지 작업
+    // 페이지 인포 json 넘기기, 메인페이지 작업
 
     public ResponseEntity<ProductDetailDTO> findProductById(Long productId) {
         Optional<Product> byId = productRepository.findById(productId);
