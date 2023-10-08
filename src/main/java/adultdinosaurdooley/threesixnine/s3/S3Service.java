@@ -67,10 +67,10 @@ public class S3Service {
     // 로컬에 저장된 이미지 지우기
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("File delete success");
+            log.info("Local:File delete success");
             return;
         }
-        log.info("File delete fail");
+        log.info("Local: File delete fail");
     }
 
     //이미지 변환과정
@@ -94,9 +94,15 @@ public class S3Service {
     }
 
     //remove s3 object
-    public void deleteFile(String fileName){
-        DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
-        amazonS3Client.deleteObject(request);
+    public void deleteFile(String filename){
+        System.out.println("delete filename = " + filename);
+       // DeleteObjectRequest request = new DeleteObjectRequest(this.bucket, filename);
+        try {
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
+            System.out.println(String.format("[%s] deletion complete", filename));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

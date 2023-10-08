@@ -1,6 +1,7 @@
 package adultdinosaurdooley.threesixnine.admin.controller;
 
 import adultdinosaurdooley.threesixnine.admin.dto.ProductDTO;
+import adultdinosaurdooley.threesixnine.admin.dto.UpdateProductDTO;
 import adultdinosaurdooley.threesixnine.admin.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +31,22 @@ public class ProductController {
         return productService.resisterProducts(multipartFilelist, productDto);
     }
 
-    /*
+
     //상품 전체 조회
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getProducts(){
         return productService.findAll();
     }
 
-    */
+
+
+    //상품 수정
+    @PutMapping ("{product_id}")
+    public ResponseEntity<Map<String, String>> modifyProduct(@PathVariable Long product_id,
+                                                             @RequestPart(name = "file") List<MultipartFile> multipartFilelist,
+                                                             @RequestPart (value = "data") UpdateProductDTO updateProductDTO)throws IOException{
+        return productService.updateProduct(multipartFilelist,  product_id ,updateProductDTO);
+    }
 
 
 }
