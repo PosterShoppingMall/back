@@ -125,6 +125,8 @@ public class ProductService {
                     int startIndex = imagePath.indexOf("static/");
                     String filename = imagePath.substring(startIndex);
                     System.out.println("filename = " + filename);
+
+                    //s3 이미지 삭제
                     s3Service.deleteFile(filename);
 
 
@@ -138,13 +140,13 @@ public class ProductService {
                 //s3와 디비에 새로운 이미지 추가
                 s3Service.upload(multipartFilelist, "static", product);
 
+                //상품 정보 수정
                 productRepository.save(product);
+
                 map.put("message", "이미지 수정이 완료되었습니다.");
             } else {
                 map.put("message", "해당 이미지를 찾을 수 없거나 업로드할 새 이미지가 없습니다.");
             }
-
-
         } else {
             map.put("message", "상품을 찾을 수 없습니다.");
         }
@@ -153,10 +155,9 @@ public class ProductService {
     }
 
 
-    // 이미지 포함 전체조회 (stock -> null 로 처리됨 )
 
 
-    //상품 전체 조회
+    //상품 전체 조회 (이미지 전체 조회)
     public ResponseEntity<List<ProductDTO>> findAll() {
         //entity -> dto
         List<Product> producList = productRepository.findAll();
@@ -178,6 +179,7 @@ public class ProductService {
                                                                 .build())
                                               .build();
 
+            //상품 이미지 전체 조회
             List<String> productImages = new ArrayList<>();
             for (ProductImage productImage : product.getProductImages()) {
                 Map<String, Object> imageInfo = new HashMap<>();
@@ -190,16 +192,50 @@ public class ProductService {
             }
 
 
-            //1번째 사진만 조회
-//            List<String> productImages = new ArrayList<>();
-//            for (ProductImage productImage : product.getProductImages()) {
-//                if (productImage.getImageNum() == 1) {
-//                    Map<String, Object> imageInfo = new HashMap<>();
-//                    imageInfo.put("imageNum", productImage.getImageNum());
-//                    imageInfo.put("imagePath", productImage.getImagePath());
-//                    productImages.add(String.valueOf(imageInfo));
-//                }
-//            }
+
+
+            productDTOList.add(new ProductDTO(productDTO, productImages));
+        }
+        return ResponseEntity.status(200)
+                             .body(productDTOList);
+    }
+
+
+    //썸네일 이미지 1개만 포함해서 전체 상품 리스트 조회
+    public ResponseEntity<List<ProductDTO>> findAllByThumbnail() {
+        //entity -> dto
+        List<Product> producList = productRepository.findAll();
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (Product product : producList) {
+            ProductDTO productDTO = ProductDTO.builder()
+                                              .id(product.getId())
+                                              .productName(product.getProductName())
+                                              .productPrice(product.getProductPrice())
+                                              .category(product.getCategory())
+                                              .productContents(product.getProductContents())
+                                              .productSize(product.getProductSize())
+                                              .saleStatus(product.getSaleStatus())
+                                              .createdAt(product.getCreatedAt())
+                                              .updatedAt(product.getUpdatedAt())
+                                              .stockDTO(StockDTO.builder()
+                                                                .stockAmount(product.getStock().getStockAmount())
+                                                                .sellAmount(product.getStock().getSellAmount())
+                                                                .build())
+                                              .build();
+
+
+
+
+            //1번째 사진만 조회(썸네일사진)
+            List<String> productImages = new ArrayList<>();
+            for (ProductImage productImage : product.getProductImages()) {
+                if (productImage.getImageNum() == 1) {
+                    Map<String, Object> imageInfo = new HashMap<>();
+                    imageInfo.put("imageNum", productImage.getImageNum());
+                    imageInfo.put("imagePath", productImage.getImagePath());
+                    productImages.add(String.valueOf(imageInfo));
+                }
+            }
 
 
             productDTOList.add(new ProductDTO(productDTO, productImages));

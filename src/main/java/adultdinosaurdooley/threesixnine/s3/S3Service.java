@@ -33,6 +33,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    //s3 올릴 이미지 객체 url로 변환 , DB 에 url 저장
     public void upload(List<MultipartFile> multipartFilelist, String dirName , Product product) throws IOException {
         int imageNum = 1; // 이미지 번호 초기값
 
@@ -88,12 +89,7 @@ public class S3Service {
         return Optional.empty();
     }
 
-    // find image from s3
-    public String getThumbnailPath(String path) {
-        return amazonS3Client.getUrl(bucket, path).toString();
-    }
-
-    //remove s3 object
+    //s3 이미지 삭제
     public void deleteFile(String filename){
         System.out.println("delete filename = " + filename);
        // DeleteObjectRequest request = new DeleteObjectRequest(this.bucket, filename);
