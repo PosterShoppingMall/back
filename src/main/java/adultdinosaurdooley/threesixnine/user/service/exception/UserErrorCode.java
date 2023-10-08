@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.users.service.exception;
+package adultdinosaurdooley.threesixnine.user.service.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

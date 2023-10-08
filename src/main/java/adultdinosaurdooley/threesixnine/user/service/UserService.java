@@ -1,11 +1,12 @@
-package adultdinosaurdooley.threesixnine.users.service;
+package adultdinosaurdooley.threesixnine.user.service;
 
-import adultdinosaurdooley.threesixnine.users.entity.User;
-import adultdinosaurdooley.threesixnine.users.service.exception.UserErrorCode;
-import adultdinosaurdooley.threesixnine.users.service.exception.UserException;
-import adultdinosaurdooley.threesixnine.users.dto.MyPageDto;
-import adultdinosaurdooley.threesixnine.users.dto.UpdateMyPageDto;
-import adultdinosaurdooley.threesixnine.users.repository.UserRepository;
+
+import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
+import adultdinosaurdooley.threesixnine.user.service.exception.UserErrorCode;
+import adultdinosaurdooley.threesixnine.user.service.exception.UserException;
+import adultdinosaurdooley.threesixnine.user.dto.MyPageDTO;
+import adultdinosaurdooley.threesixnine.user.dto.UpdateMyPageDTO;
+import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,25 +18,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+//    private final UserImageService userImageService;
 
 
-    public User findByUserId(Long id){
+    public UserEntity findByUserId(Long id){
         return userRepository.findById(id).get();
     }
 
-    public MyPageDto getMyPage(Long userId) {
-        User user = userRepository.findById(userId)
+    public MyPageDTO getMyPage(Long userId) {
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-        return MyPageDto.fromEntity(user);
+        return MyPageDTO.fromEntity(user);
     }
 
     @Transactional
-    public String updateMyPage(Long userId, UpdateMyPageDto updateMyPage) {
+    public MyPageDTO updateMyPage(Long userId, UpdateMyPageDTO updateMyPage) {
 
         validatedPhoneNumber(updateMyPage.getPhoneNumber());
 //        validatedPassword(updateMyPage.getPassword());
 
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_AUTHORIZED));
 
 //        //기존에 있던 파일 삭제
@@ -43,12 +45,12 @@ public class UserService {
 //            s3Service.deleteFile(user.getUserImg());
 //        }
 //        //사진 업로드
-//        String image = s3Service.uploadFile(multipartFile);
+//        String image = s3Service.upload(multipartFile);
 //
 //        user.setUserImg(image);
 
-        User.update(user,updateMyPage);
-        return "회원수정 완료";
+        UserEntity.update(user,updateMyPage);
+        return MyPageDTO.fromEntity(user);
     }
 
     public void validatedPhoneNumber(String phoneNumber) {

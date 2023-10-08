@@ -1,7 +1,7 @@
-package adultdinosaurdooley.threesixnine.users.entity;
+package adultdinosaurdooley.threesixnine.user.entity;
 
 import adultdinosaurdooley.threesixnine.cart.entity.Cart;
-import adultdinosaurdooley.threesixnine.users.dto.UpdateMyPageDto;
+import adultdinosaurdooley.threesixnine.user.dto.UpdateMyPageDTO;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -15,29 +15,29 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "postcode", nullable = false)
-    private String postcode;
+    @Column(name = "post_code")
+    private String postCode;
 
-    @Column(name = "road_address", nullable = false)
+    @Column(name = "road_address")
     private String roadAddress;
 
     @Column(name = "detail_address")
@@ -45,6 +45,15 @@ public class User {
 
     @Column(name = "user_img")
     private String userImg;
+
+    @Column(name = "role")
+    private String role;
+
+    @Column(name = "origin_file_name")
+    private String originFileName;
+
+    @Column(name = "stored_name")
+    private String storedName;
 
     @CreatedDate
     @Column(name = "created_at")
@@ -54,14 +63,14 @@ public class User {
     private Cart cart;
 
 
-    public static void update(User user, UpdateMyPageDto updateMyPage){
+    public static void update(UserEntity user, UpdateMyPageDTO updateMyPage){
         user.setPassword(updateMyPage.getPassword());
         user.setName(updateMyPage.getName());
         user.setPhoneNumber(updateMyPage.getPhoneNumber());
         user.setRoadAddress(updateMyPage.getRoadAddress());
         user.setDetailAddress(updateMyPage.getDetailAddress());
         user.setUserImg(updateMyPage.getUserImg());
-        user.setPostcode(updateMyPage.getPostcode());
+        user.setPostCode(updateMyPage.getPostCode());
     }
 
 }

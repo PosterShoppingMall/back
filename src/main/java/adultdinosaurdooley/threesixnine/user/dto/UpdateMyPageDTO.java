@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.users.dto;
+package adultdinosaurdooley.threesixnine.user.dto;
 
 import lombok.*;
 
@@ -7,12 +7,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateMyPageDto {
+public class UpdateMyPageDTO {
 
     private String name;
     private String password;
     private String phoneNumber;
-    private String postcode;
+    private String postCode;
     private String roadAddress;
     private String detailAddress;
     private String userImg;

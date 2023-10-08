@@ -33,10 +33,12 @@ public class SellProductDto {
     @AllArgsConstructor
     public static class ResponseOrderProduct{
         private Long orderDetailId;
+        private Long productId;
         private String productName;
         private Integer orderedAmount;
         private Integer orderedPrice;
         private String orderedSize;
+        private String orderedImagePath;
     }
 
 }

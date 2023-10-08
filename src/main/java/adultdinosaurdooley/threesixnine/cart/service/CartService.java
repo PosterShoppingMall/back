@@ -8,6 +8,11 @@ import adultdinosaurdooley.threesixnine.cart.repository.CartRepository;
 import adultdinosaurdooley.threesixnine.cart.service.exception.CartErrorCode;
 import adultdinosaurdooley.threesixnine.cart.service.exception.CartException;
 
+import adultdinosaurdooley.threesixnine.order.dto.SellProductDto;
+import adultdinosaurdooley.threesixnine.order.entity.OrderDetail;
+import adultdinosaurdooley.threesixnine.order.entity.Orders;
+import adultdinosaurdooley.threesixnine.product.entity.ProductImage;
+import adultdinosaurdooley.threesixnine.product.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,10 +29,11 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartProductRepository cartProductRepository;
+    private final ProductImageRepository productImageRepository;
 
     public GetCartDto getCart(Long userId, Pageable pageable) {
 
-        // 1. 주어진 cartId를 사용하여 카트를 검증
+        // 1. 주어진 userId를 사용하여 카트를 검증합니다.
         Cart validateCart = validateCart(userId);
         List<CartProduct> validateCartProduct = cartProductRepository.findByCartId(userId);
         // 2. 페이지네이션을 이용하여 해당 카트에 있는 제품 목록을 가져옵니다.
@@ -37,15 +43,25 @@ public class CartService {
         for (CartProduct cartProduct : validateCartProduct) {
             totalAmount += cartProduct.getCartCnt() * cartProduct.getProduct().getPrice();
         }
-        // 4. 카트에 있는 제품 정보를 CartCheck.CartProduct 객체로 매핑하고 리스트로 만듭니다.
-        List<GetCartDto.CartProduct> cartProductList = cartProductPage.stream().map(cartProduct -> GetCartDto.CartProduct.builder()
-                .productId(cartProduct.getProduct().getId())
-                .productName(cartProduct.getProduct().getName())
-                .cartCnt(cartProduct.getCartCnt())
-                .cartProductAmount(cartProduct.getCartCnt() * cartProduct.getProduct().getPrice()) // 3에서 계산한 총 가격을 설정합니다.
-                .productPrice(cartProduct.getProduct().getPrice())
-                .build()).collect(Collectors.toList());
-        // 5. CartCheck 객체를 생성하고 반환합니다.
+        // 4. 카트에 있는 제품 정보를 GetCartDto.CartProduct 객체로 매핑하고 리스트로 만듭니다.
+        List<GetCartDto.CartProduct> cartProductList = cartProductPage.getContent().stream()
+                .map(getCart -> {
+                    // 상품 이미지 리스트 가져오기
+                    List<ProductImage> productImages = getProductImagesForProduct(getCart.getProduct().getId());
+
+                    // 첫 번째 이미지 경로 가져오기
+                    String firstImagePath = productImages.isEmpty() ? "" : productImages.get(0).getImagePath();
+                    return GetCartDto.CartProduct.builder()
+                            .productId(getCart.getProduct().getId())
+                            .productName(getCart.getProduct().getName())
+                            .cartCnt(getCart.getCartCnt())
+                            .cartProductAmount(getCart.getCartCnt() * getCart.getProduct().getPrice()) // 3에서 계산한 총 가격을 설정합니다.
+                            .productPrice(getCart.getProduct().getPrice())
+                            .productImagePath(firstImagePath)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        // 5. GetCartDto 객체를 생성하고 반환합니다.
         return GetCartDto.from(validateCart, cartProductList);
     }
 
@@ -55,5 +71,9 @@ public class CartService {
                 .orElseThrow(() -> new CartException(CartErrorCode.USER_NOT_FOUND));
     }
 
+    private List<ProductImage> getProductImagesForProduct(Long productId) {
+        // ProductImageRepository를 사용하여 productId에 해당하는 ProductImage 리스트 가져오기
+        return productImageRepository.findByProductId(productId);
+    }
 
 }

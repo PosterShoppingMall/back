@@ -1,6 +1,5 @@
 package adultdinosaurdooley.threesixnine.product.entity;
 
-import adultdinosaurdooley.threesixnine.users.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,7 +17,7 @@ public class Stock {
     @Column(name = "stock_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id",nullable = false)
     private Product product;
 
@@ -27,6 +26,12 @@ public class Stock {
 
     @Column(name = "sell_amount", nullable = false)
     private Integer sellAmount;
+
+    public Stock(Product product, int stockAmount, int sellAmount){
+        this.product =product;
+        this.stockAmount =stockAmount;
+        this.sellAmount = sellAmount;
+    }
 
 
 }

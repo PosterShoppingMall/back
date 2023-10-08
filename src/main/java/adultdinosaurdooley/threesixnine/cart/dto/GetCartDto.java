@@ -33,6 +33,7 @@ public class GetCartDto {
         private Integer productPrice;
         private Integer cartCnt;
         private Integer cartProductAmount;
+        private String productImagePath;
     }
 
 }

@@ -1,7 +1,7 @@
-package adultdinosaurdooley.threesixnine.users.controller;
+package adultdinosaurdooley.threesixnine.user.controller;
 
-import adultdinosaurdooley.threesixnine.users.dto.UpdateMyPageDto;
-import adultdinosaurdooley.threesixnine.users.service.UserService;
+import adultdinosaurdooley.threesixnine.user.dto.UpdateMyPageDTO;
+import adultdinosaurdooley.threesixnine.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @PutMapping("/{user_id}")
-    public ResponseEntity<Object>updateMyPage(@PathVariable("user_id") Long userId,@RequestBody UpdateMyPageDto updateMyPage){
+    public ResponseEntity<Object>updateMyPage(@PathVariable("user_id") Long userId,@RequestBody UpdateMyPageDTO updateMyPage){
 //        Long userId = 1L;
         return ResponseEntity.ok(userService.updateMyPage(userId,updateMyPage));
     }

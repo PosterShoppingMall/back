@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.cart.entity;
 
-import adultdinosaurdooley.threesixnine.users.entity.User;
+import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,7 +24,7 @@ public class Cart {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
 
 }

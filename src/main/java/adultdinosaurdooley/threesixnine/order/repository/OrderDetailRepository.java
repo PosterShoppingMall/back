@@ -14,4 +14,6 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
     Page<OrderDetail> findAllByOrdersId(Long orderId, Pageable pageable);
 
 
+
+
 }

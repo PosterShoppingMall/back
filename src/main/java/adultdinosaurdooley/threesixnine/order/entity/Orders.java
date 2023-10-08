@@ -1,14 +1,11 @@
 package adultdinosaurdooley.threesixnine.order.entity;
 
-import adultdinosaurdooley.threesixnine.cart.entity.CartProduct;
-import adultdinosaurdooley.threesixnine.users.entity.User;
+import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -29,7 +26,7 @@ public class Orders {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @CreatedDate
     @Column(name = "ordered_at", nullable = false)
