@@ -39,8 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 요청에 대한 사용 권한 체크
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/**").permitAll()
-                .anyRequest().hasRole("USER") // 그외 나머지 요청은 User만 가능
+                .antMatchers("/cart/**").access("hasRole('ADMIN') or hasRole('USER')")
+                .antMatchers("/order/**").access("hasRole('ADMIN') or hasRole('USER')")
+                .anyRequest().permitAll() // 그외 나머지 요청은 전부 허용
                 .and()
                 .exceptionHandling()
                 .and()
