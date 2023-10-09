@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.cart.entity;
 
-import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

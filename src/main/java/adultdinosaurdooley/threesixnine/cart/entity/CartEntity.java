@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.cart.entity;
 
-import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
+//import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,16 +25,16 @@ public class CartEntity {
     @OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL)
     private List<CartProductEntity> cartProductEntities = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+//    @OneToOne
+//    @JoinColumn(name = "user_id")
+//    private UserEntity userEntity;
 
     // 처음 장바구니를 담을 때
-    public static CartEntity createCart(UserEntity userEntity) {
-        CartEntity cartEntity = new CartEntity();
-        cartEntity.setUserEntity(userEntity);
-        return cartEntity;
-    }
+//    public static CartEntity createCart(UserEntity userEntity) {
+//        CartEntity cartEntity = new CartEntity();
+//        cartEntity.setUserEntity(userEntity);
+//        return cartEntity;
+//    }
 
 
 
