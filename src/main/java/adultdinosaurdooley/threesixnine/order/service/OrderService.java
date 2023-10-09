@@ -29,10 +29,12 @@ public class OrderService {
     private ProductRepository productRepository;
     private UserRepository userRepository;
 
-    // 장바구니에서 주문할 상품 데이터를 전달받아서 주문 생성
-    public Long orders(List<OrderDTO> orderDTOList, String email){
+    // 장바 구니 에서 주문할 상품 데이터 를 전달 받아서 주문 생성
+    public Long orders(List<OrderDTO> orderDTOList, UserEntity userEntity){
 
-        UserEntity userEntity = userRepository.findByEmail(email);
+//        OrderEntity orderEntity = orderRepository.findByUserEntityId(userEntity.getId());
+
+        // orderDTO 로 OrderItem 생성
         List<OrderDetailEntity> orderDetailEntityList = new ArrayList<>();
 
         // 주문할 상품 리스트 만듦
@@ -41,14 +43,14 @@ public class OrderService {
                                                             .orElseThrow(() -> new OrderException(OrderErrorCode.PRODUCT_NOT_FOUND));
 
             OrderDetailEntity orderDetailEntity =
-                    OrderDetailEntity.createOrderDetail(productEntity, orderDTO.getOrderCount(), Stock.builder().build());
+                    OrderDetailEntity.createOrderDetail(productEntity, orderDTO.getOrderCount());
             orderDetailEntityList.add(orderDetailEntity);
         }
 
-        OrderEntity orderEntity = OrderEntity.createOrder(orderDetailEntityList, userEntity);
-        orderRepository.save(orderEntity);
+        OrderEntity order = OrderEntity.createOrder(orderDetailEntityList, userEntity);
+        orderRepository.save(order);
 
-        return orderEntity.getId();
+        return order.getId();
     }
 
 }

@@ -38,7 +38,7 @@ public class OrderEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderDetailEntity> orderDetailEntityList = new ArrayList<>();
 
     // orderDetailList에 주문 상품 정보를 담아준다.

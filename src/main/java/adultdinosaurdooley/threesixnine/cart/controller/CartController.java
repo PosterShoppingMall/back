@@ -54,5 +54,4 @@ public class CartController {
         return ResponseEntity.ok("상품이 성공적으로 삭제되었습니다.");
     }
 
-    // 장바구니 주문
 }

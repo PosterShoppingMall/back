@@ -11,8 +11,10 @@ import adultdinosaurdooley.threesixnine.cart.entity.CartProductEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartProductRepository;
 
 import adultdinosaurdooley.threesixnine.order.dto.OrderDTO;
+import adultdinosaurdooley.threesixnine.order.entity.OrderDetailEntity;
 import adultdinosaurdooley.threesixnine.order.exception.OrderErrorCode;
 import adultdinosaurdooley.threesixnine.order.exception.OrderException;
+import adultdinosaurdooley.threesixnine.order.repository.OrderDetailRepository;
 import adultdinosaurdooley.threesixnine.order.service.OrderService;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final OrderService orderService;
+    private final OrderDetailRepository orderDetailRepository;
 
     public Long addCart(UserEntity userEntity, CartDTO cartDTO){
 
@@ -88,12 +91,14 @@ public class CartService {
         cartProductRepository.delete(cartProductEntity);
     }
 
-    public Long orderCartProduct(List<CartOrderDTO> cartOrderDTOList, String email){
+    public Long orderCartProduct(List<CartOrderDTO> cartOrderDTOList, UserEntity userEntity){
+
+//        OrderDetailEntity orderDetailEntity = orderDetailRepository.findByUserEntityId(userEntity.getId());
 
         List<OrderDTO> orderDTOList = new ArrayList<>();
 
         // 장바구니 페이지에서 전달받은 cartProductId를 이용해 주문로직 전달 orderDto 객체 생성
-        for (CartOrderDTO cartOrderDTO : cartOrderDTOList){
+        for(CartOrderDTO cartOrderDTO : cartOrderDTOList){
             CartProductEntity cartProductEntity = cartProductRepository
                     .findById(cartOrderDTO.getCartProductId())
                     .orElseThrow(() -> new OrderException(OrderErrorCode.CART_PRODUCT_NOT_FOUND));
@@ -105,8 +110,9 @@ public class CartService {
         }
 
         // 장바구니에 담은 상품을 주문하도록 주문 로직 호출
-        Long orderId = orderService.orders(orderDTOList, email);
+        Long orderId = orderService.orders(orderDTOList, userEntity);
 
+        // 장바구니 주문한 상품 삭제
         for (CartOrderDTO cartOrderDTO : cartOrderDTOList){
             CartProductEntity cartProductEntity = cartProductRepository
                     .findById(cartOrderDTO.getCartProductId())

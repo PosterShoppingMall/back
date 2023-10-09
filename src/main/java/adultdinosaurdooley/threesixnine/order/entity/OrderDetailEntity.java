@@ -39,13 +39,13 @@ public class OrderDetailEntity {
 //    private DeliveryInformation deliveryInformation;
 
 
-    public static OrderDetailEntity createOrderDetail(ProductEntity productEntity, int orderedAmount, Stock stock){
+    public static OrderDetailEntity createOrderDetail(ProductEntity productEntity, int orderedAmount){
         OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
         orderDetailEntity.setProductEntity(productEntity);      // 주문 상품
         orderDetailEntity.setOrderedAmount(orderedAmount);      // 주문 수량
         orderDetailEntity.setOrderedPrice(productEntity.getProductPrice());
 
-        stock.removeStock(orderedAmount);   // 주문수량 만큼 재고 슈량 감소
+        productEntity.getStock().removeStock(orderedAmount);   // 주문수량 만큼 재고 수량 감소
         return orderDetailEntity;
     }
 }
