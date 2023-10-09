@@ -107,12 +107,7 @@ public class ProductService {
         return pageable;
     }
 
-//    public List<ProductListDTO> convertPageToDTOList(Page<Product> page) {
-//        return page.getContent()
-//                .stream()
-//                .map(this::convertToProductListDTO)
-//                .collect(Collectors.toList());
-//    }
+
 public Page<ProductListDTO> convertPageToDTOList(Page<ProductEntity> page) {
     List<ProductListDTO> productListDTOList = page.getContent()
             .stream()
