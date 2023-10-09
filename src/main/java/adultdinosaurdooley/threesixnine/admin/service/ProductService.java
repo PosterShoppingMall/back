@@ -3,10 +3,10 @@ package adultdinosaurdooley.threesixnine.admin.service;
 import adultdinosaurdooley.threesixnine.admin.dto.ProductDTO;
 import adultdinosaurdooley.threesixnine.admin.dto.StockDTO;
 import adultdinosaurdooley.threesixnine.admin.dto.UpdateProductDTO;
-import adultdinosaurdooley.threesixnine.admin.entity.Product;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
 
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImage;
-import adultdinosaurdooley.threesixnine.admin.entity.Stock;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductImageEntity;
+import adultdinosaurdooley.threesixnine.admin.entity.StockEntity;
 import adultdinosaurdooley.threesixnine.admin.repository.ImageFileRepository;
 import adultdinosaurdooley.threesixnine.admin.repository.ProductRepository;
 import adultdinosaurdooley.threesixnine.admin.repository.StockRepository;
@@ -34,27 +34,27 @@ public class ProductService {
     public ResponseEntity<Map<String, String>> resisterProducts(List<MultipartFile> multipartFilelist, ProductDTO productDTO) throws IOException {
 
         // DTO -> Entity로 변환
-        Product product = Product.builder()
-                                 .productName(productDTO.getProductName())
-                                 .productPrice(productDTO.getProductPrice())
-                                 .category(productDTO.getCategory())
-                                 .productContents(productDTO.getProductContents())
-                                 .productSize(productDTO.getProductSize())
-                                 .saleStatus(productDTO.getSaleStatus())
-                                 .build();
+        ProductEntity product = ProductEntity.builder()
+                                                   .productName(productDTO.getProductName())
+                                                   .productPrice(productDTO.getProductPrice())
+                                                   .category(productDTO.getCategory())
+                                                   .productContents(productDTO.getProductContents())
+                                                   .productSize(productDTO.getProductSize())
+                                                   .saleStatus(productDTO.getSaleStatus())
+                                                   .build();
         //상품 db 저장
         Long id = productRepository.save(product)
                                    .getId();
 
         // stock dto -> entity 로 변환
-        Stock stock = Stock.builder()
-                           .product(product)
-                           .stockAmount(productDTO.getStockDTO().getStockAmount())
-                           .sellAmount(productDTO.getStockDTO().getSellAmount())
-                           .build();
+        StockEntity stockEntity = StockEntity.builder()
+                                             .product(product)
+                                             .stockAmount(productDTO.getStockDTO().getStockAmount())
+                                             .sellAmount(productDTO.getStockDTO().getSellAmount())
+                                             .build();
 
         //재고 db 저장
-        stockRepository.save(stock);
+        stockRepository.save(stockEntity);
 
         //이미지 db 저장
         if (multipartFilelist != null) {
@@ -62,7 +62,7 @@ public class ProductService {
         }
 
         //상품이 제대로 등록 되었는 지 확인
-        Optional<Product> findId = productRepository.findById(id);
+        Optional<ProductEntity> findId = productRepository.findById(id);
 
         Map<String, String> map = new HashMap<>();
 
@@ -81,14 +81,14 @@ public class ProductService {
         Map<String, String> map = new HashMap<>();
 
         //수정할 상품 productId에 해당하는 상품
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Optional<ProductEntity> productOptional = productRepository.findById(productId);
 
         System.out.println("productOptional = " + productOptional);
 
         //1. 상품 수정
         if (productOptional.isPresent()) {
             //product 엔티티 값 가져오기
-            Product product = productOptional.get();
+            ProductEntity product = productOptional.get();
 
             //dto-> entity 변환
             product.setProductName(updateProductDTO.getProductName());
@@ -102,13 +102,13 @@ public class ProductService {
 
         //2. 상품 이미지 수정
             if (multipartFilelist != null) {
-                List<ProductImage> productImages = imageFileRepository.findAllByProduct(product);
+                List<ProductImageEntity> productImageEntities = imageFileRepository.findAllByProduct(product);
                 //List<ProductImage> productImages = imageFileRepository.findAllById(productId);
-                System.out.println("productImages = " + productImages);
+                System.out.println("productImages = " + productImageEntities);
                 //기존 이미지 불러오기
-                for (ProductImage productImage : productImages) {
+                for (ProductImageEntity productImageEntity : productImageEntities) {
 
-                    String imagePath = productImage.getImagePath();
+                    String imagePath = productImageEntity.getImagePath();
                     System.out.println("imagePath = " + imagePath);
 
                     //s3 에 삭제할 url 전달
@@ -147,32 +147,32 @@ public class ProductService {
     //상품 전체 조회 (이미지 전체 조회)
     public ResponseEntity<List<ProductDTO>> findAll() {
         //entity -> dto
-        List<Product> producList = productRepository.findAll();
+        List<ProductEntity> producList = productRepository.findAll();
         List<ProductDTO> productDTOList = new ArrayList<>();
-        for (Product product : producList) {
+        for (ProductEntity productEntity : producList) {
             ProductDTO productDTO = ProductDTO.builder()
-                                              .id(product.getId())
-                                              .productName(product.getProductName())
-                                              .productPrice(product.getProductPrice())
-                                              .category(product.getCategory())
-                                              .productContents(product.getProductContents())
-                                              .productSize(product.getProductSize())
-                                              .saleStatus(product.getSaleStatus())
-                                              .createdAt(product.getCreatedAt())
-                                              .updatedAt(product.getUpdatedAt())
+                                              .id(productEntity.getId())
+                                              .productName(productEntity.getProductName())
+                                              .productPrice(productEntity.getProductPrice())
+                                              .category(productEntity.getCategory())
+                                              .productContents(productEntity.getProductContents())
+                                              .productSize(productEntity.getProductSize())
+                                              .saleStatus(productEntity.getSaleStatus())
+                                              .createdAt(productEntity.getCreatedAt())
+                                              .updatedAt(productEntity.getUpdatedAt())
                                               .stockDTO(StockDTO.builder()
-                                                                .stockAmount(product.getStock().getStockAmount())
-                                                                .sellAmount(product.getStock().getSellAmount())
+                                                                .stockAmount(productEntity.getStock().getStockAmount())
+                                                                .sellAmount(productEntity.getStock().getSellAmount())
                                                                 .build())
                                               .build();
 
             //상품 이미지 전체 조회
             List<String> productImages = new ArrayList<>();
-            for (ProductImage productImage : product.getProductImages()) {
+            for (ProductImageEntity productImageEntity : productEntity.getProductImageEntity()) {
                 Map<String, Object> imageInfo = new HashMap<>();
 
-                imageInfo.put("imageNum", productImage.getImageNum());
-                imageInfo.put("imagePath", productImage.getImagePath());
+                imageInfo.put("imageNum", productImageEntity.getImageNum());
+                imageInfo.put("imagePath", productImageEntity.getImagePath());
 
                 productImages.add(String.valueOf(imageInfo));
                 //productImages.add(productImage.getImagePath());
@@ -186,37 +186,47 @@ public class ProductService {
 
     //썸네일 이미지 1개만 포함해서 전체 상품 리스트 조회
     public ResponseEntity<List<ProductDTO>> findAllByThumbnail() {
+
+
         //entity -> dto
-        List<Product> producList = productRepository.findAll();
+        List<ProductEntity> producList = productRepository.findAll();
         List<ProductDTO> productDTOList = new ArrayList<>();
-        for (Product product : producList) {
+        for (ProductEntity productEntity : producList) {
             ProductDTO productDTO = ProductDTO.builder()
-                                              .id(product.getId())
-                                              .productName(product.getProductName())
-                                              .productPrice(product.getProductPrice())
-                                              .category(product.getCategory())
-                                              .productContents(product.getProductContents())
-                                              .productSize(product.getProductSize())
-                                              .saleStatus(product.getSaleStatus())
-                                              .createdAt(product.getCreatedAt())
-                                              .updatedAt(product.getUpdatedAt())
+                                              .id(productEntity.getId())
+                                              .productName(productEntity.getProductName())
+                                              .productPrice(productEntity.getProductPrice())
+                                              .category(productEntity.getCategory())
+                                              .productContents(productEntity.getProductContents())
+                                              .productSize(productEntity.getProductSize())
+                                              .saleStatus(productEntity.getSaleStatus())
+                                              .createdAt(productEntity.getCreatedAt())
+                                              .updatedAt(productEntity.getUpdatedAt())
                                               .stockDTO(StockDTO.builder()
-                                                                .stockAmount(product.getStock().getStockAmount())
-                                                                .sellAmount(product.getStock().getSellAmount())
+                                                                .stockAmount(productEntity.getStock().getStockAmount())
+                                                                .sellAmount(productEntity.getStock().getSellAmount())
                                                                 .build())
+
                                               .build();
 
             //1번째 사진만 조회(썸네일사진)
             List<String> productImages = new ArrayList<>();
-            for (ProductImage productImage : product.getProductImages()) {
-                if (productImage.getImageNum() == 1) {
+            for (ProductImageEntity productImageEntity : productEntity.getProductImageEntity()) {
+                if (productImageEntity.getImageNum() == 1) {
                     Map<String, Object> imageInfo = new HashMap<>();
-                    imageInfo.put("imageNum", productImage.getImageNum());
-                    imageInfo.put("imagePath", productImage.getImagePath());
+                    imageInfo.put("imageNum", productImageEntity.getImageNum());
+                    imageInfo.put("imagePath", productImageEntity.getImagePath());
                     productImages.add(String.valueOf(imageInfo));
                 }
             }
-            productDTOList.add(new ProductDTO(productDTO, productImages));
+
+
+
+
+            //List<String> imagePaths = imageFileRepository.findImagePathsByProductAndImageNumIsOne(product);
+
+             productDTOList.add(new ProductDTO(productDTO, productImages));
+            // productDTOList.add(new ProductDTO(productDTO, imagePaths));
         }
         return ResponseEntity.status(200)
                              .body(productDTOList);

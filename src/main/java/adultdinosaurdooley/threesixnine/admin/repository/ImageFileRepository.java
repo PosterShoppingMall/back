@@ -1,23 +1,28 @@
 package adultdinosaurdooley.threesixnine.admin.repository;
 
-import adultdinosaurdooley.threesixnine.admin.entity.Product;
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImage;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductImageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-public interface ImageFileRepository extends JpaRepository<ProductImage, Long> {
+public interface ImageFileRepository extends JpaRepository<ProductImageEntity, Long> {
 
-  //  List<ProductImage> findAllByProduct(Product product);
+    List<ProductImageEntity> findAllByProduct(ProductEntity product);
 
     //List<ProductImage> findAllById(Long productId);
 
-    @Modifying
-    @Query("DELETE FROM ProductImage pi WHERE pi.product = ?1")
-    void deleteAllByProduct(Product product);
 
-    List<ProductImage> findAllByProduct(Product product);
+    @Modifying
+    @Query("DELETE FROM ProductImageEntity pi WHERE pi.product = ?1")
+    void deleteAllByProduct(ProductEntity product);
+
+
+//    @Query("SELECT pi.imagePath FROM ProductImageEntity  pi WHERE pi.productEntity =: product AND pi.imageNum = 1")
+//    List<String> findImagePathsByProductAndImageNumIsOne(@Param("product") ProductEntity productEntity);
+
+
 }

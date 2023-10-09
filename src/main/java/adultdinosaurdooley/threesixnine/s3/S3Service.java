@@ -1,7 +1,7 @@
 package adultdinosaurdooley.threesixnine.s3;
 
-import adultdinosaurdooley.threesixnine.admin.entity.Product;
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImage;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductImageEntity;
 import adultdinosaurdooley.threesixnine.admin.repository.ImageFileRepository;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -34,18 +34,18 @@ public class S3Service {
     private String bucket;
 
     //s3 올릴 이미지 객체 url로 변환 , DB 에 url 저장
-    public void upload(List<MultipartFile> multipartFilelist, String dirName , Product product) throws IOException {
+    public void upload(List<MultipartFile> multipartFilelist, String dirName , ProductEntity product) throws IOException {
         int imageNum = 1; // 이미지 번호 초기값
 
         for (MultipartFile multipartFile : multipartFilelist){
             if (multipartFile != null){
                 File uploadFile = convert(multipartFile)
                         .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
-                ProductImage productImage = new ProductImage(upload(uploadFile, dirName),product); //url 정보 저장
+                ProductImageEntity productImageEntity = new ProductImageEntity(upload(uploadFile, dirName), product); //url 정보 저장
 
                 //이미지 번호 설정 1~ 이미지 갯수 만큼 ++
-                productImage.setImageNum(imageNum++);
-                imageFileRepository.save(productImage);
+                productImageEntity.setImageNum(imageNum++);
+                imageFileRepository.save(productImageEntity);
             }
         }
     }

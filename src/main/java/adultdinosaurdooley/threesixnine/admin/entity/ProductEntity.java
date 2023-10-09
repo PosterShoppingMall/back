@@ -1,8 +1,6 @@
 package adultdinosaurdooley.threesixnine.admin.entity;
 
-import adultdinosaurdooley.threesixnine.admin.dto.UpdateProductDTO;
 import adultdinosaurdooley.threesixnine.admin.entity.constant.ProductSaleStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "product")
-public class Product extends BaseTimeEntity{
+public class ProductEntity extends BaseTimeEntity{
 
     @Id
     @Column(name = "product_id")
@@ -46,12 +44,12 @@ public class Product extends BaseTimeEntity{
 
     //CascadeType.REMOVE : 상품 등록이 삭제되면 이미지도 같이 삭제
     @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<ProductImage> productImages = new ArrayList<>();
+    private List<ProductImageEntity> productImageEntity = new ArrayList<>();
 
 
 
     @OneToOne(mappedBy = "product", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private Stock stock;
+    private StockEntity stock;
 
 
 

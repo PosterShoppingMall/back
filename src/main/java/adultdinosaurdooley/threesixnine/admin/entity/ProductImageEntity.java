@@ -3,14 +3,13 @@ package adultdinosaurdooley.threesixnine.admin.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "product_img")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductImage {
+public class ProductImageEntity {
     @Id
     @Column(name = "product_img_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +24,10 @@ public class ProductImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private ProductEntity product;
 
     
-    public ProductImage(String imagePath, Product product){
+    public ProductImageEntity(String imagePath, ProductEntity product){
         this.imagePath = imagePath;
         this.product = product;
     }
