@@ -30,66 +30,72 @@ public class UserService {
 
     public ResponseEntity<?> signup(UserDTO userDTO) throws IOException {
         String emailRegEx = "^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*[A-Za-z]{2,3}$";
+        String passwordRegEx = "^[A-Za-z0-9]{8,20}$";
         if (!findByEmail(userDTO.getEmail())) {
             if (Pattern.matches(emailRegEx, userDTO.getEmail())) {
-                if (userDTO.getUserImg().isEmpty()) {
-                    // 기본 이미지 등록
-                    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-                    String encodePass = bCryptPasswordEncoder.encode(userDTO.getPassword());
-                    Map<String, Object> response = new HashMap<>();
-                    UserEntity userEntity = UserEntity.builder()
-                                                      .email(userDTO.getEmail())
-                                                      .name(userDTO.getName())
-                                                      .password(encodePass)
-                                                      .phoneNumber(userDTO.getPhoneNumber())
-                                                      .postCode(userDTO.getPostCode())
-                                                      .roadAddress(userDTO.getRoadAddress())
-                                                      .detailAddress(userDTO.getDetailAddress())
-//                                                      .storedName(savedImg.get("fileName"))
-                                                      .userImg("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defautimg.jpg")
-                                                      .role("ROLE_USER")
-                                                      .build();
+                if (Pattern.matches(passwordRegEx, userDTO.getPassword())) {
 
-                    Long id = userRepository.save(userEntity).getId();
-                    if (id > 0) {
-                        response.put("success", true);
-                        response.put("message", "회원가입완료");
-                        return ResponseEntity.status(200).body(response);
+                    if (userDTO.getUserImg().isEmpty()) {
+                        // 기본 이미지 등록
+                        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+                        String encodePass = bCryptPasswordEncoder.encode(userDTO.getPassword());
+                        Map<String, Object> response = new HashMap<>();
+                        UserEntity userEntity = UserEntity.builder()
+                                                          .email(userDTO.getEmail())
+                                                          .name(userDTO.getName())
+                                                          .password(encodePass)
+                                                          .phoneNumber(userDTO.getPhoneNumber())
+                                                          .postCode(userDTO.getPostCode())
+                                                          .roadAddress(userDTO.getRoadAddress())
+                                                          .detailAddress(userDTO.getDetailAddress())
+//                                                      .storedName(savedImg.get("fileName"))
+                                                          .userImg("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defautimg.jpg")
+                                                          .role("ROLE_USER")
+                                                          .build();
+
+                        Long id = userRepository.save(userEntity).getId();
+                        if (id > 0) {
+                            response.put("success", true);
+                            response.put("message", "회원가입완료");
+                            return ResponseEntity.status(200).body(response);
+                        } else {
+                            response.put("success", false);
+                            response.put("message", "회원가입에 실패했습니다.");
+                            return ResponseEntity.status(400).body(response);
+                        }
                     } else {
-                        response.put("success", false);
-                        response.put("message", "회원가입에 실패했습니다.");
-                        return ResponseEntity.status(400).body(response);
+                        // 이미지 직접 등록
+                        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+                        String encodePass = bCryptPasswordEncoder.encode(userDTO.getPassword());
+                        Map<String, String> savedImg = userImageService.saveImg(userDTO.getUserImg());
+                        Map<String, Object> response = new HashMap<>();
+                        UserEntity userEntity = UserEntity.builder()
+                                                          .email(userDTO.getEmail())
+                                                          .name(userDTO.getName())
+                                                          .password(encodePass)
+                                                          .phoneNumber(userDTO.getPhoneNumber())
+                                                          .postCode(userDTO.getPostCode())
+                                                          .roadAddress(userDTO.getRoadAddress())
+                                                          .detailAddress(userDTO.getDetailAddress())
+                                                          .originFileName(savedImg.get("originalFilename"))
+                                                          .storedName(savedImg.get("fileName"))
+                                                          .userImg(savedImg.get("accessUrl"))
+                                                          .role("ROLE_USER")
+                                                          .build();
+
+                        Long id = userRepository.save(userEntity).getId();
+                        if (id > 0) {
+                            response.put("success", true);
+                            response.put("message", "회원가입 완료");
+                            return ResponseEntity.status(200).body(response);
+                        } else {
+                            response.put("success", false);
+                            response.put("message", "회원가입에 실패했습니다.");
+                            return ResponseEntity.status(400).body(response);
+                        }
                     }
                 } else {
-                    // 이미지 직접 등록
-                    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-                    String encodePass = bCryptPasswordEncoder.encode(userDTO.getPassword());
-                    Map<String, String> savedImg = userImageService.saveImg(userDTO.getUserImg());
-                    Map<String, Object> response = new HashMap<>();
-                    UserEntity userEntity = UserEntity.builder()
-                                                      .email(userDTO.getEmail())
-                                                      .name(userDTO.getName())
-                                                      .password(encodePass)
-                                                      .phoneNumber(userDTO.getPhoneNumber())
-                                                      .postCode(userDTO.getPostCode())
-                                                      .roadAddress(userDTO.getRoadAddress())
-                                                      .detailAddress(userDTO.getDetailAddress())
-                                                      .originFileName(savedImg.get("originalFilename"))
-                                                      .storedName(savedImg.get("fileName"))
-                                                      .userImg(savedImg.get("accessUrl"))
-                                                      .role("ROLE_USER")
-                                                      .build();
-
-                    Long id = userRepository.save(userEntity).getId();
-                    if (id > 0) {
-                        response.put("success", true);
-                        response.put("message", "회원가입 완료");
-                        return ResponseEntity.status(200).body(response);
-                    } else {
-                        response.put("success", false);
-                        response.put("message", "회원가입에 실패했습니다.");
-                        return ResponseEntity.status(400).body(response);
-                    }
+                    return ResponseEntity.status(400).body("잘못된 비밀번호 형식입니다.");
                 }
             } else {
                 return ResponseEntity.status(400).body("잘못된 이메일 형식입니다.");
