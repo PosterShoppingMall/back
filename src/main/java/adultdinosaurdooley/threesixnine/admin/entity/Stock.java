@@ -38,12 +38,12 @@ public class Stock {
         this.sellAmount = sellAmount;
     }
 
-//    public void removeStock(int stockAmount){
-//        int restStock = this.stockAmount - stockAmount;
-//        if(restStock < 0) {
-//            throw new OrderException(OrderErrorCode.OUT_OF_STOCK);
-//        }
-//        this.stockAmount = restStock;
-//    }
+    public void removeStock(int stockAmount){
+        int restStock = this.stockAmount - stockAmount;
+        if(restStock < 0) {
+            throw new OrderException(OrderErrorCode.OUT_OF_STOCK);
+        }
+        this.stockAmount = restStock;
+    }
 
 }

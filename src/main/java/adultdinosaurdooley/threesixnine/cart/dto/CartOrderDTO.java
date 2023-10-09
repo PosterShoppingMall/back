@@ -14,5 +14,5 @@ public class CartOrderDTO {
 
     private Long cartProductId;
 
-    private List<CartProductDTO> cartProductDTOList;
+    private List<CartOrderDTO> cartOrderDTOList;
 }
