@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Stock {
+public class StockEntity {
 
     @Id
     @Column(name = "stock_id")
@@ -21,7 +21,7 @@ public class Stock {
     //일대일 매핑 -> 즉시로딩을 기본 Fetch전략으로 설정
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private ProductEntity product;
 
     @Column(name = "stock_amount", nullable = false)
     private int stockAmount; //상품 재고
