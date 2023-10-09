@@ -2,7 +2,7 @@ package adultdinosaurdooley.threesixnine.admin.controller;
 
 import adultdinosaurdooley.threesixnine.admin.dto.ProductDTO;
 import adultdinosaurdooley.threesixnine.admin.dto.UpdateProductDTO;
-import adultdinosaurdooley.threesixnine.admin.service.ProductService;
+import adultdinosaurdooley.threesixnine.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +15,9 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/369/admin")//공통 주소
-public class ProductController {
+public class AdminController {
 
-    private final ProductService productService;
+    private final AdminService adminService;
 
 
     //상품 등록
@@ -26,7 +26,7 @@ public class ProductController {
                                                                 @RequestPart (value = "data") ProductDTO productDto) throws IOException{
 
         System.out.println("productRequestDto " + productDto);
-        return productService.resisterProducts(multipartFilelist, productDto);
+        return adminService.resisterProducts(multipartFilelist, productDto);
     }
 
 
@@ -35,7 +35,7 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getProducts(){
         //return productService.findAll();
         //상품 전체 조회(썸네일만)
-        return productService.findAllByThumbnail();
+        return adminService.findAllByThumbnail();
     }
 
 
@@ -46,7 +46,7 @@ public class ProductController {
     public ResponseEntity<Map<String, String>> modifyProduct(@PathVariable Long product_id,
                                                              @RequestPart(name = "file") List<MultipartFile> multipartFilelist,
                                                              @RequestPart (value = "data") UpdateProductDTO updateProductDTO)throws IOException{
-        return productService.updateProduct(multipartFilelist,  product_id ,updateProductDTO);
+        return adminService.updateProduct(multipartFilelist,  product_id ,updateProductDTO);
     }
 
 

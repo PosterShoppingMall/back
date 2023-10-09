@@ -7,7 +7,6 @@ import javax.persistence.*;
 @Table(name = "stock")
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

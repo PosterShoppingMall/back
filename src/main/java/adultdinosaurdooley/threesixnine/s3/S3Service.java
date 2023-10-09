@@ -1,8 +1,9 @@
 package adultdinosaurdooley.threesixnine.s3;
 
-import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImageEntity;
+
 import adultdinosaurdooley.threesixnine.admin.repository.ImageFileRepository;
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.product.entity.ProductImageEntity;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;

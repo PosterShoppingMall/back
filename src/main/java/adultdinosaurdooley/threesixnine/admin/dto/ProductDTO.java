@@ -1,6 +1,7 @@
 package adultdinosaurdooley.threesixnine.admin.dto;
 
-import adultdinosaurdooley.threesixnine.admin.entity.constant.ProductSaleStatus;
+
+import adultdinosaurdooley.threesixnine.product.entity.constant.ProductSaleStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 

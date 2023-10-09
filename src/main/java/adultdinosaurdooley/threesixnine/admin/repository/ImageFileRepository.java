@@ -1,7 +1,8 @@
 package adultdinosaurdooley.threesixnine.admin.repository;
 
-import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImageEntity;
+
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.product.entity.ProductImageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

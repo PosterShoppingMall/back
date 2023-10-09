@@ -3,13 +3,13 @@ package adultdinosaurdooley.threesixnine.admin.service;
 import adultdinosaurdooley.threesixnine.admin.dto.ProductDTO;
 import adultdinosaurdooley.threesixnine.admin.dto.StockDTO;
 import adultdinosaurdooley.threesixnine.admin.dto.UpdateProductDTO;
-import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
 
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImageEntity;
-import adultdinosaurdooley.threesixnine.admin.entity.StockEntity;
 import adultdinosaurdooley.threesixnine.admin.repository.ImageFileRepository;
-import adultdinosaurdooley.threesixnine.admin.repository.ProductRepository;
+import adultdinosaurdooley.threesixnine.admin.repository.AdminProductRepository;
 import adultdinosaurdooley.threesixnine.admin.repository.StockRepository;
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.product.entity.ProductImageEntity;
+import adultdinosaurdooley.threesixnine.product.entity.StockEntity;
 import adultdinosaurdooley.threesixnine.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService {
+public class AdminService {
 
-    private final ProductRepository productRepository;
+    private final AdminProductRepository adminProductRepository;
     private final S3Service s3Service;
     private final StockRepository stockRepository;
     private final ImageFileRepository imageFileRepository;
@@ -35,16 +35,16 @@ public class ProductService {
 
         // DTO -> Entity로 변환
         ProductEntity product = ProductEntity.builder()
-                                                   .productName(productDTO.getProductName())
-                                                   .productPrice(productDTO.getProductPrice())
-                                                   .category(productDTO.getCategory())
-                                                   .productContents(productDTO.getProductContents())
-                                                   .productSize(productDTO.getProductSize())
-                                                   .saleStatus(productDTO.getSaleStatus())
-                                                   .build();
+                                             .productName(productDTO.getProductName())
+                                             .productPrice(productDTO.getProductPrice())
+                                             .category(productDTO.getCategory())
+                                             .productContents(productDTO.getProductContents())
+                                             .productSize(productDTO.getProductSize())
+                                             .saleStatus(productDTO.getSaleStatus())
+                                             .build();
         //상품 db 저장
-        Long id = productRepository.save(product)
-                                   .getId();
+        Long id = adminProductRepository.save(product)
+                                        .getId();
 
         // stock dto -> entity 로 변환
         StockEntity stockEntity = StockEntity.builder()
@@ -62,7 +62,7 @@ public class ProductService {
         }
 
         //상품이 제대로 등록 되었는 지 확인
-        Optional<ProductEntity> findId = productRepository.findById(id);
+        Optional<ProductEntity> findId = adminProductRepository.findById(id);
 
         Map<String, String> map = new HashMap<>();
 
@@ -81,7 +81,7 @@ public class ProductService {
         Map<String, String> map = new HashMap<>();
 
         //수정할 상품 productId에 해당하는 상품
-        Optional<ProductEntity> productOptional = productRepository.findById(productId);
+        Optional<ProductEntity> productOptional = adminProductRepository.findById(productId);
 
         System.out.println("productOptional = " + productOptional);
 
@@ -98,6 +98,9 @@ public class ProductService {
             product.getStock().setStockAmount(updateProductDTO.getStockAmount());
             product.setCategory(updateProductDTO.getCategory());
             product.setSaleStatus(updateProductDTO.getSaleStatus());
+
+
+
 
 
         //2. 상품 이미지 수정
@@ -130,7 +133,7 @@ public class ProductService {
                 s3Service.upload(multipartFilelist, "static", product);
 
                 //상품 정보 수정
-                productRepository.save(product);
+                adminProductRepository.save(product);
 
                 map.put("message", "상품 수정이 완료되었습니다.");
             } else {
@@ -147,7 +150,7 @@ public class ProductService {
     //상품 전체 조회 (이미지 전체 조회)
     public ResponseEntity<List<ProductDTO>> findAll() {
         //entity -> dto
-        List<ProductEntity> producList = productRepository.findAll();
+        List<ProductEntity> producList = adminProductRepository.findAll();
         List<ProductDTO> productDTOList = new ArrayList<>();
         for (ProductEntity productEntity : producList) {
             ProductDTO productDTO = ProductDTO.builder()
@@ -189,7 +192,7 @@ public class ProductService {
 
 
         //entity -> dto
-        List<ProductEntity> producList = productRepository.findAll();
+        List<ProductEntity> producList = adminProductRepository.findAll();
         List<ProductDTO> productDTOList = new ArrayList<>();
         for (ProductEntity productEntity : producList) {
             ProductDTO productDTO = ProductDTO.builder()
