@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +24,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Slf4j
 @Component
@@ -91,7 +97,7 @@ public class S3Service {
     }
 
     //s3 이미지 삭제
-    public void deleteFile(String filename){
+    public void deleteFile(String filename) {
 
         System.out.println("delete filename = " + filename);
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filename));

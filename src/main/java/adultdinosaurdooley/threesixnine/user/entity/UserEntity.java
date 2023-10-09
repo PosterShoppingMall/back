@@ -1,9 +1,14 @@
 package adultdinosaurdooley.threesixnine.user.entity;
 
+import adultdinosaurdooley.threesixnine.cart.entity.CartEntity;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -11,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "user")
 public class UserEntity {
 
@@ -46,6 +52,7 @@ public class UserEntity {
     @Column(name = "role")
     private String role;
 
+    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -54,4 +61,7 @@ public class UserEntity {
 
     @Column(name = "stored_name")
     private String storedName;
+
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private CartEntity cartEntity;
 }

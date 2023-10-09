@@ -1,5 +1,6 @@
 package adultdinosaurdooley.threesixnine.user.service;
 
+import adultdinosaurdooley.threesixnine.s3.S3Service;
 import adultdinosaurdooley.threesixnine.user.dto.LoginTokenSaveDto;
 import adultdinosaurdooley.threesixnine.user.dto.Token;
 import adultdinosaurdooley.threesixnine.user.dto.UserDTO;
@@ -49,7 +50,7 @@ public class UserService {
                                                           .roadAddress(userDTO.getRoadAddress())
                                                           .detailAddress(userDTO.getDetailAddress())
 //                                                      .storedName(savedImg.get("fileName"))
-                                                          .userImg("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defautimg.jpg")
+                                                          .userImg("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")
                                                           .role("ROLE_USER")
                                                           .build();
 
@@ -202,7 +203,7 @@ public class UserService {
             if (result.matches("이미지 삭제")) {
                 refreshTokenRepository.deleteById(refreshToken.getId());
                 userRepository.deleteById(findId.getId());
-                return ResponseEntity.status(200).body("회원탈퇴 완퇴료");
+                return ResponseEntity.status(200).body("회원탈퇴 완료");
             } else {
                 return ResponseEntity.badRequest().body("회원탈퇴 실패");
             }
