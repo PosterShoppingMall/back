@@ -1,12 +1,11 @@
-package adultdinosaurdooley.threesixnine.admin.entity;
+package adultdinosaurdooley.threesixnine.product.entity;
 
-import adultdinosaurdooley.threesixnine.admin.entity.constant.ProductSaleStatus;
+import adultdinosaurdooley.threesixnine.product.entity.constant.ProductSaleStatus;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Builder
 @Getter
@@ -15,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "product")
-public class Product extends BaseTimeEntity{
+public class ProductEntity extends BaseTimeEntity{
 
     @Id
     @Column(name = "product_id")
@@ -41,9 +40,11 @@ public class Product extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private ProductSaleStatus saleStatus; //상품 판매 상태
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductImage> productImages = new ArrayList<>();
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Stock stock;
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<ProductImageEntity> productImageEntity = new ArrayList<>();
+
+
+    @OneToOne(mappedBy = "product", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private StockEntity stock;
 }

@@ -1,8 +1,6 @@
-package adultdinosaurdooley.threesixnine.admin.dto;
+package adultdinosaurdooley.threesixnine.product.dto;
 
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter

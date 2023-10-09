@@ -1,8 +1,9 @@
 package adultdinosaurdooley.threesixnine.s3;
 
-import adultdinosaurdooley.threesixnine.admin.entity.Product;
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImage;
+
 import adultdinosaurdooley.threesixnine.admin.repository.ImageFileRepository;
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.product.entity.ProductImageEntity;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -33,18 +34,19 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public void upload(List<MultipartFile> multipartFilelist, String dirName , Product product) throws IOException {
+    //s3 올릴 이미지 객체 url로 변환 , DB 에 url 저장
+    public void upload(List<MultipartFile> multipartFilelist, String dirName , ProductEntity product) throws IOException {
         int imageNum = 1; // 이미지 번호 초기값
 
         for (MultipartFile multipartFile : multipartFilelist){
             if (multipartFile != null){
                 File uploadFile = convert(multipartFile)
                         .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
-                ProductImage productImage = new ProductImage(upload(uploadFile, dirName),product); //url 정보 저장
+                ProductImageEntity productImageEntity = new ProductImageEntity(upload(uploadFile, dirName), product); //url 정보 저장
 
                 //이미지 번호 설정 1~ 이미지 갯수 만큼 ++
-                productImage.setImageNum(imageNum++);
-                imageFileRepository.save(productImage);
+                productImageEntity.setImageNum(imageNum++);
+                imageFileRepository.save(productImageEntity);
             }
         }
     }
@@ -67,10 +69,10 @@ public class S3Service {
     // 로컬에 저장된 이미지 지우기
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("File delete success");
+            log.info("Local:File delete success");
             return;
         }
-        log.info("File delete fail");
+        log.info("Local: File delete fail");
     }
 
     //이미지 변환과정
@@ -88,15 +90,13 @@ public class S3Service {
         return Optional.empty();
     }
 
-    // find image from s3
-    public String getThumbnailPath(String path) {
-        return amazonS3Client.getUrl(bucket, path).toString();
-    }
+    //s3 이미지 삭제
+    public void deleteFile(String filename){
 
-    //remove s3 object
-    public void deleteFile(String fileName){
-        DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
-        amazonS3Client.deleteObject(request);
+        System.out.println("delete filename = " + filename);
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
+        System.out.println(String.format("[%s] deletion complete", filename));
+
     }
 
 }
