@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.entity;
+package adultdinosaurdooley.threesixnine.product.entity;
 
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;

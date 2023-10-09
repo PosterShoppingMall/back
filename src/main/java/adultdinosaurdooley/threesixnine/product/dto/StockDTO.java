@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.dto;
+package adultdinosaurdooley.threesixnine.product.dto;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.dto;
+package adultdinosaurdooley.threesixnine.product.dto;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProductDetailDTO {
-    private Long id;
+    private Long productId;
     private String productName;
     private int productPrice;
     private String productSize;

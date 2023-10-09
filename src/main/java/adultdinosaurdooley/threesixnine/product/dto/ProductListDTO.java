@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.dto;
+package adultdinosaurdooley.threesixnine.product.dto;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ProductListDTO {
-    private Long id;
+    private Long productId;
     private String productName;
     private int productPrice;
     private String imageUrl;

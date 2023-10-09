@@ -1,4 +1,4 @@
-package adultdinosaurdooley.threesixnine.entity;
+package adultdinosaurdooley.threesixnine.product.entity;
 import lombok.*;
 
 import javax.persistence.*;

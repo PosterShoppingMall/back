@@ -1,6 +1,6 @@
-package adultdinosaurdooley.threesixnine.entity;
+package adultdinosaurdooley.threesixnine.product.entity;
 
-import adultdinosaurdooley.threesixnine.entity.constant.ProductSaleStatus;
+import adultdinosaurdooley.threesixnine.product.entity.constant.ProductSaleStatus;
 import lombok.*;
 
 import javax.persistence.*;
