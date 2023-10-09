@@ -1,14 +1,15 @@
 package adultdinosaurdooley.threesixnine.cart.service;
 
-import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
-import adultdinosaurdooley.threesixnine.admin.repository.ProductRepository;
+
 import adultdinosaurdooley.threesixnine.cart.dto.CartDTO;
 import adultdinosaurdooley.threesixnine.cart.entity.CartEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartRepository;
 import adultdinosaurdooley.threesixnine.cart.dto.CartProductDTO;
 import adultdinosaurdooley.threesixnine.cart.entity.CartProductEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartProductRepository;
-import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
+import adultdinosaurdooley.threesixnine.product.repository.ProductRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
