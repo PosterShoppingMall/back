@@ -16,6 +16,7 @@ public class SellProductDto {
     private Long orderId;
     private String orderStatus;
     private LocalDateTime orderedDate;
+    private Integer totalOrderPrice;
     private List<ResponseOrderProduct> orderedProducts;
 
     public static SellProductDto from(Orders orders, List<ResponseOrderProduct> orderedProducts) {
@@ -23,6 +24,7 @@ public class SellProductDto {
                 .orderId(orders.getId())
                 .orderStatus(orders.getOrderStatus())
                 .orderedDate(orders.getOrderedAt())
+                .totalOrderPrice(orders.getTotalAmount())
                 .orderedProducts(orderedProducts)
                 .build();
     }
@@ -37,6 +39,7 @@ public class SellProductDto {
         private String productName;
         private Integer orderedAmount;
         private Integer orderedPrice;
+        private Integer totalOrderedPrice;
         private String orderedSize;
         private String orderedImagePath;
     }

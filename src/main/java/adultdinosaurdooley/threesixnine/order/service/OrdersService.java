@@ -50,7 +50,8 @@ public class OrdersService {
                             .orderDetailId(orderDetail.getId())
                             .productName(orderDetail.getProduct().getName())
                             .orderedAmount(orderDetail.getOrderedAmount())
-                            .orderedPrice(orderDetail.getOrderedPrice())
+                            .orderedPrice(orderDetail.getProduct().getPrice())
+                            .totalOrderedPrice(orderDetail.getProduct().getPrice() * orderDetail.getOrderedAmount())
                             .orderedSize(orderDetail.getProduct().getSize())
                             .orderedImagePath(firstImagePath)
                             .build();

@@ -1,29 +1,68 @@
 package adultdinosaurdooley.threesixnine.user.controller;
 
 import adultdinosaurdooley.threesixnine.user.dto.UpdateMyPageDTO;
+import adultdinosaurdooley.threesixnine.user.dto.UserDTO;
+import adultdinosaurdooley.threesixnine.user.jwt.JwtTokenProvider;
 import adultdinosaurdooley.threesixnine.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Map;
+
 @RequiredArgsConstructor
-@RequestMapping("/369")
+@RequestMapping("/369/user")
 @RestController
 @Slf4j
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@ModelAttribute UserDTO userDTO) throws IOException {
+        return userService.signup(userDTO);
+    }
+
+    @PostMapping("/emailcheck")
+    public ResponseEntity<?> emailCheck(@RequestBody Map<String, String> email) {
+        String userEmail = email.get("email");
+        boolean emailCheck = userService.findByEmail(userEmail);
+        return ResponseEntity.status(200).body(emailCheck);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> login) {
+        return userService.login(login);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userId = jwtTokenProvider.getUserPK(header);
+        return userService.logout(userId);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(HttpServletRequest request) {
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userid = jwtTokenProvider.getUserPK(header);
+        return userService.delete(userid);
+    }
     @GetMapping("/{user_id}")
-    public ResponseEntity<Object> getMyPage(@PathVariable("user_id") Long userId){
-//        Long userId = 1L;
-        return ResponseEntity.ok(userService.getMyPage(userId));
+    public ResponseEntity<Object> getMyPage(@PathVariable("user_id") Long userId,HttpServletRequest request){
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userid = jwtTokenProvider.getUserPK(header);
+        return ResponseEntity.ok(userService.getMyPage(userId,userid));
     }
 
     @PutMapping("/{user_id}")
-    public ResponseEntity<Object>updateMyPage(@PathVariable("user_id") Long userId,@RequestBody UpdateMyPageDTO updateMyPage){
-//        Long userId = 1L;
-        return ResponseEntity.ok(userService.updateMyPage(userId,updateMyPage));
+    public ResponseEntity<Object>updateMyPage(@PathVariable("user_id") Long userId,@ModelAttribute UpdateMyPageDTO updateMyPage,HttpServletRequest request) throws IOException {
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userid = jwtTokenProvider.getUserPK(header);
+        return ResponseEntity.ok(userService.updateMyPage(userId,updateMyPage,userid));
     }
 }

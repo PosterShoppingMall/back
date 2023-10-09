@@ -4,18 +4,20 @@ import adultdinosaurdooley.threesixnine.cart.entity.Cart;
 import adultdinosaurdooley.threesixnine.user.dto.UpdateMyPageDTO;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name="Users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserEntity {
+public class UserEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +48,10 @@ public class UserEntity {
     @Column(name = "user_img")
     private String userImg;
 
+    @CreatedDate
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
     @Column(name = "role")
     private String role;
 
@@ -54,10 +60,6 @@ public class UserEntity {
 
     @Column(name = "stored_name")
     private String storedName;
-
-    @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
@@ -69,7 +71,7 @@ public class UserEntity {
         user.setPhoneNumber(updateMyPage.getPhoneNumber());
         user.setRoadAddress(updateMyPage.getRoadAddress());
         user.setDetailAddress(updateMyPage.getDetailAddress());
-        user.setUserImg(updateMyPage.getUserImg());
+        user.setUserImg(String.valueOf(updateMyPage.getUserImg()));
         user.setPostCode(updateMyPage.getPostCode());
     }
 }
