@@ -3,6 +3,7 @@ package adultdinosaurdooley.threesixnine.user.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -44,6 +45,9 @@ public class UserEntity {
 
     @Column(name = "role")
     private String role;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "origin_file_name")
     private String originFileName;
