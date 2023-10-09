@@ -23,8 +23,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findTop6ByOrderBySellAmountDesc(Pageable pageable);
 
     // 검색
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL'")
-    Page<ProductEntity> findByProductNameContaining(Pageable pageable, String keyword);
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' AND p.productName LIKE %:keyword% ")
+    Page<ProductEntity> findByProductNameContaining(Pageable pageable, @Param("keyword") String keyword);
 
     // 전체 조회
     @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL'")
