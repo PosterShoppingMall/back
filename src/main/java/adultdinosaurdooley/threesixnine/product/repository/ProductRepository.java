@@ -35,6 +35,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     Page<ProductEntity> findByCategory(@Param("category") String category, Pageable pageable);
 
     // 베스트 카테고리
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' ORDER BY s.sellAmount DESC")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' ORDER BY s.sellAmount DESC, p.createdAt DESC")
     Page<ProductEntity> findTop30ByOrderBySellAmountDesc(Pageable pageable);
 }
