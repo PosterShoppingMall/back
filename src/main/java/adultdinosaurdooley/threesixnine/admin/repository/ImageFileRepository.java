@@ -13,9 +13,11 @@ public interface ImageFileRepository extends JpaRepository<ProductImage, Long> {
 
   //  List<ProductImage> findAllByProduct(Product product);
 
-    List<ProductImage> findAllById(Long productId);
+    //List<ProductImage> findAllById(Long productId);
 
     @Modifying
     @Query("DELETE FROM ProductImage pi WHERE pi.product = ?1")
     void deleteAllByProduct(Product product);
+
+    List<ProductImage> findAllByProduct(Product product);
 }

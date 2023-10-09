@@ -33,7 +33,6 @@ public class ProductService {
     //상품 등록
     public ResponseEntity<Map<String, String>> resisterProducts(List<MultipartFile> multipartFilelist, ProductDTO productDTO) throws IOException {
 
-
         // DTO -> Entity로 변환
         Product product = Product.builder()
                                  .productName(productDTO.getProductName())
@@ -43,7 +42,6 @@ public class ProductService {
                                  .productSize(productDTO.getProductSize())
                                  .saleStatus(productDTO.getSaleStatus())
                                  .build();
-
         //상품 db 저장
         Long id = productRepository.save(product)
                                    .getId();
@@ -51,12 +49,9 @@ public class ProductService {
         // stock dto -> entity 로 변환
         Stock stock = Stock.builder()
                            .product(product)
-                           .stockAmount(productDTO.getStockDTO()
-                                                  .getStockAmount())
-                           .sellAmount(productDTO.getStockDTO()
-                                                 .getSellAmount())
+                           .stockAmount(productDTO.getStockDTO().getStockAmount())
+                           .sellAmount(productDTO.getStockDTO().getSellAmount())
                            .build();
-
 
         //재고 db 저장
         stockRepository.save(stock);
@@ -65,7 +60,6 @@ public class ProductService {
         if (multipartFilelist != null) {
             s3Service.upload(multipartFilelist, "static", product);
         }
-
 
         //상품이 제대로 등록 되었는 지 확인
         Optional<Product> findId = productRepository.findById(id);
@@ -82,7 +76,6 @@ public class ProductService {
     }
 
     //상품 수정
-
     @Transactional
     public ResponseEntity<Map<String, String>> updateProduct(List<MultipartFile> multipartFilelist, Long productId, UpdateProductDTO updateProductDTO) throws IOException {
         Map<String, String> map = new HashMap<>();
@@ -102,16 +95,15 @@ public class ProductService {
             product.setProductPrice(updateProductDTO.getProductPrice());
             product.setProductSize(updateProductDTO.getProductSize());
             product.setProductContents(updateProductDTO.getProductContents());
-            product.getStock()
-                   .setStockAmount(updateProductDTO.getStockAmount());
+            product.getStock().setStockAmount(updateProductDTO.getStockAmount());
             product.setCategory(updateProductDTO.getCategory());
             product.setSaleStatus(updateProductDTO.getSaleStatus());
 
 
         //2. 상품 이미지 수정
             if (multipartFilelist != null) {
-                //List<ProductImage> productImages = imageFileRepository.findAllByProduct(product);
-                List<ProductImage> productImages = imageFileRepository.findAllById(productId);
+                List<ProductImage> productImages = imageFileRepository.findAllByProduct(product);
+                //List<ProductImage> productImages = imageFileRepository.findAllById(productId);
                 System.out.println("productImages = " + productImages);
                 //기존 이미지 불러오기
                 for (ProductImage productImage : productImages) {
@@ -121,6 +113,7 @@ public class ProductService {
 
                     //s3 에 삭제할 url 전달
 
+
                     //static/ 포함한 url
                     int startIndex = imagePath.indexOf("static/");
                     String filename = imagePath.substring(startIndex);
@@ -128,14 +121,10 @@ public class ProductService {
 
                     //s3 이미지 삭제
                     s3Service.deleteFile(filename);
-
-
                 }
-
 
                 // DB 삭제
                 imageFileRepository.deleteAllByProduct(product);
-
 
                 //s3와 디비에 새로운 이미지 추가
                 s3Service.upload(multipartFilelist, "static", product);
@@ -143,7 +132,7 @@ public class ProductService {
                 //상품 정보 수정
                 productRepository.save(product);
 
-                map.put("message", "이미지 수정이 완료되었습니다.");
+                map.put("message", "상품 수정이 완료되었습니다.");
             } else {
                 map.put("message", "해당 이미지를 찾을 수 없거나 업로드할 새 이미지가 없습니다.");
             }
@@ -153,8 +142,6 @@ public class ProductService {
 
         return ResponseEntity.ok(map);
     }
-
-
 
 
     //상품 전체 조회 (이미지 전체 조회)
@@ -190,10 +177,6 @@ public class ProductService {
                 productImages.add(String.valueOf(imageInfo));
                 //productImages.add(productImage.getImagePath());
             }
-
-
-
-
             productDTOList.add(new ProductDTO(productDTO, productImages));
         }
         return ResponseEntity.status(200)
@@ -223,9 +206,6 @@ public class ProductService {
                                                                 .build())
                                               .build();
 
-
-
-
             //1번째 사진만 조회(썸네일사진)
             List<String> productImages = new ArrayList<>();
             for (ProductImage productImage : product.getProductImages()) {
@@ -236,13 +216,10 @@ public class ProductService {
                     productImages.add(String.valueOf(imageInfo));
                 }
             }
-
-
             productDTOList.add(new ProductDTO(productDTO, productImages));
         }
         return ResponseEntity.status(200)
                              .body(productDTOList);
     }
-
 
 }

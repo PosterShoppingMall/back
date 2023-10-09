@@ -91,14 +91,11 @@ public class S3Service {
 
     //s3 이미지 삭제
     public void deleteFile(String filename){
+
         System.out.println("delete filename = " + filename);
-       // DeleteObjectRequest request = new DeleteObjectRequest(this.bucket, filename);
-        try {
-            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
-            System.out.println(String.format("[%s] deletion complete", filename));
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
+        System.out.println(String.format("[%s] deletion complete", filename));
+
     }
 
 }

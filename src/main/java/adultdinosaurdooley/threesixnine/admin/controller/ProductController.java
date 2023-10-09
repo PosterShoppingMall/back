@@ -33,9 +33,9 @@ public class ProductController {
     //상품 전체 조회
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getProducts(){
-        return productService.findAll();
+        //return productService.findAll();
         //상품 전체 조회(썸네일만)
-        //return productService.findAllByThumbnail();
+        return productService.findAllByThumbnail();
     }
 
 
