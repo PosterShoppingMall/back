@@ -37,8 +37,8 @@ public class S3Service {
     private final AmazonS3Client amazonS3Client;
     private final ImageFileRepository imageFileRepository;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    @Value("${cloud.aws.s3.product-bucket}")
+    private String productBucket;
 
     //s3 올릴 이미지 객체 url로 변환 , DB 에 url 저장
     public void upload(List<MultipartFile> multipartFilelist, String dirName , ProductEntity product) throws IOException {
@@ -67,8 +67,8 @@ public class S3Service {
 
     // S3로 업로드
     private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        amazonS3Client.putObject(new PutObjectRequest(productBucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        return amazonS3Client.getUrl(productBucket, fileName).toString();
     }
 
 
@@ -100,7 +100,7 @@ public class S3Service {
     public void deleteFile(String filename) {
 
         System.out.println("delete filename = " + filename);
-        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
+        amazonS3Client.deleteObject(new DeleteObjectRequest(productBucket, filename));
         System.out.println(String.format("[%s] deletion complete", filename));
 
     }
