@@ -1,7 +1,5 @@
 package adultdinosaurdooley.threesixnine.order.service.exception;
 
-
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,5 @@
 package adultdinosaurdooley.threesixnine.order.service.exception;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +14,5 @@ public class OrderException extends RuntimeException{
         this.errorCode = errorCode;
         this.errorMessage = errorCode.getDescription();
     }
-
 }
 

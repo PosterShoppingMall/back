@@ -9,7 +9,5 @@ import java.util.List;
 
 public interface CartProductRepository extends JpaRepository<CartProduct,Long> {
     Page<CartProduct> findAllByCartId(Long cartId, Pageable pageable);
-
     List<CartProduct> findByCartId(Long cartId);
-
 }

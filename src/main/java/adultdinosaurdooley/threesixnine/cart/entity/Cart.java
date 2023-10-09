@@ -26,5 +26,4 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-
 }

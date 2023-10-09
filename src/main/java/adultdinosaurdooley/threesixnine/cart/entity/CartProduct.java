@@ -2,10 +2,8 @@ package adultdinosaurdooley.threesixnine.cart.entity;
 
 import adultdinosaurdooley.threesixnine.product.entity.Product;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor

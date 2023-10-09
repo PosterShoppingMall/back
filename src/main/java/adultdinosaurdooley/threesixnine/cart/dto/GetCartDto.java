@@ -21,7 +21,6 @@ public class GetCartDto {
                 .cartProducts(cartProducts)
                 .build();
     }
-
     @Setter
     @Getter
     @AllArgsConstructor
@@ -35,6 +34,5 @@ public class GetCartDto {
         private Integer cartProductAmount;
         private String productImagePath;
     }
-
 }
 

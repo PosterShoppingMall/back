@@ -1,7 +1,5 @@
 package adultdinosaurdooley.threesixnine.product.entity;
 
-import adultdinosaurdooley.threesixnine.cart.entity.Cart;
-import adultdinosaurdooley.threesixnine.cart.entity.CartProduct;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 

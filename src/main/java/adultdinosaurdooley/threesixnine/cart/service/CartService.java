@@ -8,9 +8,6 @@ import adultdinosaurdooley.threesixnine.cart.repository.CartRepository;
 import adultdinosaurdooley.threesixnine.cart.service.exception.CartErrorCode;
 import adultdinosaurdooley.threesixnine.cart.service.exception.CartException;
 
-import adultdinosaurdooley.threesixnine.order.dto.SellProductDto;
-import adultdinosaurdooley.threesixnine.order.entity.OrderDetail;
-import adultdinosaurdooley.threesixnine.order.entity.Orders;
 import adultdinosaurdooley.threesixnine.product.entity.ProductImage;
 import adultdinosaurdooley.threesixnine.product.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;

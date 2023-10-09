@@ -1,7 +1,6 @@
 package adultdinosaurdooley.threesixnine.product.dto;
 
 import lombok.*;
-
 @Getter
 @Setter
 @NoArgsConstructor

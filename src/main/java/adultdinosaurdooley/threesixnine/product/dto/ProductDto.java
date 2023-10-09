@@ -14,7 +14,6 @@ import java.util.List;
 @ToString
 public class ProductDto {
 
-
     private Long id;
     private String productName;
     private int productPrice;
@@ -49,7 +48,6 @@ public class ProductDto {
         this.updatedAt = updatedAt;
 
     }
-
 
     @Builder
     public ProductDto(ProductDto productDTO, List<String> productImages) {

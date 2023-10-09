@@ -27,7 +27,6 @@ public class OrdersService {
     // OrdersRepository, OrderDetailRepository, UserRepository, ProductImageRepository 주입
     private final OrdersRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final UserRepository userRepository;
     private final ProductImageRepository productImageRepository;
 
     public SellProductDto ordersList(Long userId, Pageable pageable) {

@@ -72,5 +72,4 @@ public class UserEntity {
         user.setUserImg(updateMyPage.getUserImg());
         user.setPostCode(updateMyPage.getPostCode());
     }
-
 }

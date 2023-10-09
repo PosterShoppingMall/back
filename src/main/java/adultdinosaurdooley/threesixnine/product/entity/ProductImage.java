@@ -27,8 +27,6 @@ public class ProductImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
-
-
     public ProductImage(String imagePath, Product product){
         this.imagePath = imagePath;
         this.product = product;

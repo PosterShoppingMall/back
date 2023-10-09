@@ -21,10 +21,6 @@ public class UserService {
 //    private final UserImageService userImageService;
 
 
-    public UserEntity findByUserId(Long id){
-        return userRepository.findById(id).get();
-    }
-
     public MyPageDTO getMyPage(Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
@@ -35,7 +31,7 @@ public class UserService {
     public MyPageDTO updateMyPage(Long userId, UpdateMyPageDTO updateMyPage) {
 
         validatedPhoneNumber(updateMyPage.getPhoneNumber());
-//        validatedPassword(updateMyPage.getPassword());
+        validatedPassword(updateMyPage.getPassword());
 
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_AUTHORIZED));
@@ -59,13 +55,13 @@ public class UserService {
         }
     }
 
-//    public void validatedPassword(String password) {
-//        if (password.length() < 8) {
-//            throw new UserException(UserErrorCode.INVALID_PASSWORD);
-//        }
-//        if (!password.matches(
-//                "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$")) {
-//            throw new UserException(UserErrorCode.INVALID_PHONE_NUMBER_PATTERN);
-//        }
-//    }
+    public void validatedPassword(String password) {
+        if (password.length() < 8) {
+            throw new UserException(UserErrorCode.INVALID_PASSWORD);
+        }
+        if (!password.matches(
+                "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$")) {
+            throw new UserException(UserErrorCode.INVALID_PHONE_NUMBER_PATTERN);
+        }
+    }
 }
