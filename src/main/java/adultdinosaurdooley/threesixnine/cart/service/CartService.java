@@ -3,17 +3,21 @@ package adultdinosaurdooley.threesixnine.cart.service;
 import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
 import adultdinosaurdooley.threesixnine.admin.repository.ProductRepository;
 import adultdinosaurdooley.threesixnine.cart.dto.CartDTO;
+import adultdinosaurdooley.threesixnine.cart.dto.CartOrderDTO;
 import adultdinosaurdooley.threesixnine.cart.entity.CartEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartRepository;
 import adultdinosaurdooley.threesixnine.cart.dto.CartProductDTO;
 import adultdinosaurdooley.threesixnine.cart.entity.CartProductEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartProductRepository;
+
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -78,5 +82,34 @@ public class CartService {
 
         cartProductRepository.delete(cartProductEntity);
     }
+
+//    public Long orderCartProduct(List<CartOrderDTO> cartOrderDTOList, String email){
+//
+//        List<OrderDTO> orderDTOList = new ArrayList<>();
+//
+//        // 장바구니 페이지에서 전달받은 cartProductId를 이용해 주문로직 전달 orderDto 객체 생성
+//        for (CartOrderDTO cartOrderDTO : cartOrderDTOList){
+//            CartProductEntity cartProductEntity = cartProductRepository
+//                    .findById(cartOrderDTO.getCartProductId())
+//                    .orElseThrow(() -> new OrderException(OrderErrorCode.CART_PRODUCT_NOT_FOUND));
+//
+//            OrderDTO orderDTO = new OrderDTO();
+//            orderDTO.setProductId(cartProductEntity.getId());
+//            orderDTO.setOrderCount(cartProductEntity.getCartCnt());
+//            orderDTOList.add(orderDTO);
+//        }
+//
+//        // 장바구니에 담은 상품을 주문하도록 주문 로직 호출
+//        Long orderId = orderService.orders(orderDTOList, email);
+//
+//        for (CartOrderDTO cartOrderDTO : cartOrderDTOList){
+//            CartProductEntity cartProductEntity = cartProductRepository
+//                    .findById(cartOrderDTO.getCartProductId())
+//                    .orElseThrow(() -> new OrderException(OrderErrorCode.CART_PRODUCT_NOT_FOUND));
+//            cartProductRepository.delete(cartProductEntity);
+//        }
+//
+//        return orderId;
+//    }
 
 }

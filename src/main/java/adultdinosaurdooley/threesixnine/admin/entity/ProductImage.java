@@ -3,7 +3,6 @@ package adultdinosaurdooley.threesixnine.admin.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "product_img")
@@ -25,12 +24,12 @@ public class ProductImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private ProductEntity productEntity;
 
     
-    public ProductImage(String imagePath, Product product){
+    public ProductImage(String imagePath, ProductEntity productEntity){
         this.imagePath = imagePath;
-        this.product = product;
+        this.productEntity = productEntity;
     }
 
 

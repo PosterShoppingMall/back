@@ -1,5 +1,7 @@
 package adultdinosaurdooley.threesixnine.admin.entity;
 
+import adultdinosaurdooley.threesixnine.order.exception.OrderErrorCode;
+import adultdinosaurdooley.threesixnine.order.exception.OrderException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,7 +24,7 @@ public class Stock {
     //일대일 매핑 -> 즉시로딩을 기본 Fetch전략으로 설정
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private ProductEntity productEntity;
 
     @Column(name = "stock_amount",nullable = false)
     private int stockAmount; //상품 재고
@@ -30,10 +32,18 @@ public class Stock {
     @Column(name = "sell_amount",nullable = false)
     private int sellAmount; //판매 수량
 
-    public Stock(Product product, int stockAmount, int sellAmount){
-        this.product =product;
+    public Stock(ProductEntity productEntity, int stockAmount, int sellAmount){
+        this.productEntity = productEntity;
         this.stockAmount =stockAmount;
         this.sellAmount = sellAmount;
     }
+
+//    public void removeStock(int stockAmount){
+//        int restStock = this.stockAmount - stockAmount;
+//        if(restStock < 0) {
+//            throw new OrderException(OrderErrorCode.OUT_OF_STOCK);
+//        }
+//        this.stockAmount = restStock;
+//    }
 
 }

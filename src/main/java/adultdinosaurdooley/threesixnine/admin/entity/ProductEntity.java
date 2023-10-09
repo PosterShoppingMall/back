@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "product")
-public class Product extends BaseTimeEntity{
+public class ProductEntity extends BaseTimeEntity{
 
     @Id
     @Column(name = "product_id")
@@ -41,9 +41,9 @@ public class Product extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private ProductSaleStatus saleStatus; //상품 판매 상태
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductImage> productImages = new ArrayList<>();
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Stock stock;
 }

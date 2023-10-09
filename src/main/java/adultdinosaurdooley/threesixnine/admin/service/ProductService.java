@@ -1,10 +1,8 @@
 package adultdinosaurdooley.threesixnine.admin.service;
 
 import adultdinosaurdooley.threesixnine.admin.dto.ProductDTO;
-import adultdinosaurdooley.threesixnine.admin.dto.StockDTO;
-import adultdinosaurdooley.threesixnine.admin.entity.Product;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
 
-import adultdinosaurdooley.threesixnine.admin.entity.ProductImage;
 import adultdinosaurdooley.threesixnine.admin.entity.Stock;
 import adultdinosaurdooley.threesixnine.admin.repository.ProductRepository;
 import adultdinosaurdooley.threesixnine.admin.repository.StockRepository;
@@ -31,7 +29,7 @@ public class ProductService {
 
 
         // DTO -> Entity로 변환
-        Product product = Product.builder()
+        ProductEntity productEntity = ProductEntity.builder()
                                  .productName(productDTO.getProductName())
                                  .productPrice(productDTO.getProductPrice())
                                  .category(productDTO.getCategory())
@@ -41,12 +39,12 @@ public class ProductService {
                                  .build();
 
         //상품 db 저장
-        Long id = productRepository.save(product)
+        Long id = productRepository.save(productEntity)
                                    .getId();
 
         // stock dto -> entity 로 변환
         Stock stock = Stock.builder()
-                           .product(product)
+                           .productEntity(productEntity)
                            .stockAmount(productDTO.getStockDTO().getStockAmount())
                            .sellAmount(productDTO.getStockDTO().getSellAmount())
                            .build();
@@ -57,12 +55,12 @@ public class ProductService {
 
         //이미지 db 저장
         if (multipartFilelist != null) {
-            s3Service.upload(multipartFilelist, "static", product);
+            s3Service.upload(multipartFilelist, "static", productEntity);
         }
 
 
         //상품이 제대로 등록 되었는 지 확인
-        Optional<Product> findId = productRepository.findById(id);
+        Optional<ProductEntity> findId = productRepository.findById(id);
 
         Map<String, String> map = new HashMap<>();
 

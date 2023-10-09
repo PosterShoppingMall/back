@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.s3;
 
-import adultdinosaurdooley.threesixnine.admin.entity.Product;
+import adultdinosaurdooley.threesixnine.admin.entity.ProductEntity;
 import adultdinosaurdooley.threesixnine.admin.entity.ProductImage;
 import adultdinosaurdooley.threesixnine.admin.repository.ImageFileRepository;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -33,14 +33,14 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public void upload(List<MultipartFile> multipartFilelist, String dirName , Product product) throws IOException {
+    public void upload(List<MultipartFile> multipartFilelist, String dirName , ProductEntity productEntity) throws IOException {
         int imageNum = 1; // 이미지 번호 초기값
 
         for (MultipartFile multipartFile : multipartFilelist){
             if (multipartFile != null){
                 File uploadFile = convert(multipartFile)
                         .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
-                ProductImage productImage = new ProductImage(upload(uploadFile, dirName),product); //url 정보 저장
+                ProductImage productImage = new ProductImage(upload(uploadFile, dirName), productEntity); //url 정보 저장
 
                 //이미지 번호 설정 1~ 이미지 갯수 만큼 ++
                 productImage.setImageNum(imageNum++);
