@@ -14,6 +14,7 @@ import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +30,13 @@ public class OrdersService {
     private final OrderDetailRepository orderDetailRepository;
     private final ProductImageRepository productImageRepository;
 
-    public SellProductDto ordersList(Long userId, Pageable pageable) {
+    public SellProductDto ordersList(Long userId, int page, int size) {
         // 사용자 유효성 검사를 통해 사용자 확인
         Orders validateUser = validUser(userId);
 
-        // 주문 상세 내역 페이지 가져오기
+        Pageable pageable = PageRequest.of(page,size);
+
+         // 주문 상세 내역 페이지 가져오기
         Page<OrderDetail> orderDetailPage = orderDetailRepository.findAllByOrdersId(validateUser.getId(), pageable);
 
         // 주문 상세 내역을 SellProductDto.ResponseOrderProduct로 변환

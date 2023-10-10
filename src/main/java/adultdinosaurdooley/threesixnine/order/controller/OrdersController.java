@@ -5,10 +5,7 @@ import adultdinosaurdooley.threesixnine.order.service.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,7 +14,10 @@ public class OrdersController {
 
     private final OrdersService orderService;
     @GetMapping("/order/{userId}")
-    public ResponseEntity<SellProductDto> ordersList(@PathVariable("userId") Long userId, Pageable pageable) {
-        return ResponseEntity.ok(orderService.ordersList(userId, pageable));
+    public ResponseEntity<SellProductDto> ordersList(
+            @PathVariable("userId") Long userId,
+            @RequestParam (name = "page", defaultValue = "1") int page,
+            @RequestParam (name = "size", required = false, defaultValue = "5") int size) {
+        return ResponseEntity.ok(orderService.ordersList(userId, page, size));
     }
 }
