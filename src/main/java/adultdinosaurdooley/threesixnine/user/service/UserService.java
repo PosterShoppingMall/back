@@ -54,7 +54,7 @@ public class UserService {
                                 .roadAddress(userDTO.getRoadAddress())
                                 .detailAddress(userDTO.getDetailAddress())
 //                                                      .storedName(savedImg.get("fileName"))
-                                .userImg("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defautimg.jpg")
+                                .userImg("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")
                                 .role("ROLE_USER")
                                 .build();
 
@@ -196,7 +196,7 @@ public class UserService {
         String userImgUrl = findId.getUserImg();
         RefreshTokenEntity refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
 
-        if (userImgUrl.matches("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defautimg.jpg")) {
+        if (userImgUrl.matches("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")) {
             refreshTokenRepository.deleteById(refreshToken.getId());
             userRepository.deleteById(findId.getId());
             return ResponseEntity.status(200).body("회원탈퇴 완료");

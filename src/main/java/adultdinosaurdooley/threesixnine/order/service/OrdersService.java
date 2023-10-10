@@ -77,4 +77,6 @@ public class OrdersService {
         // ProductImageRepository를 사용하여 productId에 해당하는 ProductImage 리스트 가져오기
         return productImageRepository.findByProductId(productId);
     }
+
+
 }
