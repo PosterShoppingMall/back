@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class CartDTO {
 
+    // 장바 구니 에 상품을 담을 때 사용 하는 DTO
+
     @NotNull
     private Long productId;
 

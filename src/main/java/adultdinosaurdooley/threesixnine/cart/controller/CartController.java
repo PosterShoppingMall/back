@@ -26,7 +26,6 @@ public class CartController {
     public ResponseEntity<String> cart(@PathVariable("userId") @Positive long userId,
                                         @RequestBody @Valid CartDTO addCartDTO){
 
-        System.out.println("userId = "+userId);
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() ->
                 new EntityNotFoundException("해당하는 사용자를 찾을 수 없습니다."));
 
@@ -53,6 +52,4 @@ public class CartController {
 
         return ResponseEntity.ok("상품이 성공적으로 삭제되었습니다.");
     }
-
-    // 장바구니 주문
 }

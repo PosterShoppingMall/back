@@ -2,11 +2,19 @@ package adultdinosaurdooley.threesixnine.cart.service;
 
 
 import adultdinosaurdooley.threesixnine.cart.dto.CartDTO;
+import adultdinosaurdooley.threesixnine.cart.dto.CartOrderDTO;
 import adultdinosaurdooley.threesixnine.cart.entity.CartEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartRepository;
 import adultdinosaurdooley.threesixnine.cart.dto.CartProductDTO;
 import adultdinosaurdooley.threesixnine.cart.entity.CartProductEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartProductRepository;
+import adultdinosaurdooley.threesixnine.order.dto.OrderDTO;
+import adultdinosaurdooley.threesixnine.order.entity.OrderDetailEntity;
+import adultdinosaurdooley.threesixnine.order.exception.OrderErrorCode;
+import adultdinosaurdooley.threesixnine.order.exception.OrderException;
+import adultdinosaurdooley.threesixnine.order.repository.OrderDetailRepository;
+import adultdinosaurdooley.threesixnine.order.repository.OrderRepository;
+import adultdinosaurdooley.threesixnine.order.service.OrderService;
 import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
 import adultdinosaurdooley.threesixnine.product.repository.ProductRepository;
 
@@ -16,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +36,8 @@ public class CartService {
     private final CartProductRepository cartProductRepository;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
     public Long addCart(UserEntity userEntity, CartDTO cartDTO){
 
@@ -79,6 +91,39 @@ public class CartService {
         CartProductEntity cartProductEntity = cartProductRepository.findById(cartProductId).orElseThrow(EntityNotFoundException::new);
 
         cartProductRepository.delete(cartProductEntity);
+    }
+
+    public Long orderCartProduct(CartOrderDTO CartOrderDTO, UserEntity userEntity){
+
+//        OrderDetailEntity orderDetailEntity = orderRepository.findByUserEntityId(userEntity.getId());
+
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+
+
+        for(Long cartOrderId: CartOrderDTO.getCartProductIdList()){
+            CartProductEntity cartProductEntity = cartProductRepository
+                    .findById(cartOrderId)
+                    .orElseThrow(() -> new OrderException(OrderErrorCode.CART_PRODUCT_NOT_FOUND));
+            System.out.println("cartOrderId :" + cartOrderId);
+
+            OrderDTO orderDTO = new OrderDTO();
+            orderDTO.setProductId(cartProductEntity.getProductEntity().getId());
+            orderDTO.setOrderCount(cartProductEntity.getCartCnt());
+            orderDTOList.add(orderDTO);
+        }
+
+        // 장바구니에 담은 상품을 주문하도록 주문 로직 호출
+        Long orderId = orderService.orders(orderDTOList, userEntity);
+
+        // 장바구니 주문한 상품 삭제
+        for(Long cartOrderId: CartOrderDTO.getCartProductIdList()){
+            CartProductEntity cartProductEntity = cartProductRepository
+                    .findById(cartOrderId)
+                    .orElseThrow(() -> new OrderException(OrderErrorCode.CART_PRODUCT_NOT_FOUND));
+            cartProductRepository.delete(cartProductEntity);
+        }
+
+        return orderId;
     }
 
 }

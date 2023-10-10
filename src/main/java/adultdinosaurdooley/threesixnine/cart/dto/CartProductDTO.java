@@ -14,6 +14,8 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 public class CartProductDTO {
 
+    // 장바 구니 수량 변경할 때 사용 하는 DTO
+
     private Long cartProductId;
 
     @Min(value = 1, message = "최소 1개 이상 담아주세요.")

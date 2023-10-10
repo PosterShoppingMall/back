@@ -1,4 +1,6 @@
 package adultdinosaurdooley.threesixnine.product.entity;
+import adultdinosaurdooley.threesixnine.order.exception.OrderErrorCode;
+import adultdinosaurdooley.threesixnine.order.exception.OrderException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,4 +29,18 @@ public class StockEntity {
 
     @Column(name = "sell_amount", nullable = false)
     private int sellAmount; //판매 수량
+
+    public void removeStock(int stockAmount){
+        int restStock = this.stockAmount - stockAmount;
+        if(restStock < 0) {
+            throw new OrderException(OrderErrorCode.OUT_OF_STOCK);
+        }
+        this.stockAmount = restStock;
+    }
+
+    public void addSellAmount(int sellAmount){
+        int existedSellAmount = this.sellAmount + sellAmount;
+        this.sellAmount = existedSellAmount;
+    }
+
 }
