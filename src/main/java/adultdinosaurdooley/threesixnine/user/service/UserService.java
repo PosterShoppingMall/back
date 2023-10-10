@@ -32,6 +32,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserImageService userImageService;
 
+
     public ResponseEntity<?> signup(UserDTO userDTO) throws IOException {
         String emailRegEx = "^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*[A-Za-z]{2,3}$";
         String passwordRegEx = "^[A-Za-z0-9]{8,20}$";
@@ -221,50 +222,56 @@ public class UserService {
     }
 
     @Transactional
-    public MyPageDTO updateMyPage(Long userId, UpdateMyPageDTO updateMyPage, String userid) throws IOException {
-
-//        validatedPhoneNumber(updateMyPage.getPhoneNumber());
+    public Map<String, Object> updateMyPage(Long userId, UpdateMyPageDTO updateMyPage, String userid) throws IOException {
+        // 비밀번호 유효성 검사
         validatedPassword(updateMyPage.getPassword());
 
+        // 사용자 조회
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_AUTHORIZED));
 
-        //기존에 있던 파일 삭제
-        if(user.getUserImg() != null) {
-            userImageService.deleteImg(user.getUserImg());
+        // 사용자 정보 업데이트
+        user.setName(updateMyPage.getName());
+        user.setPhoneNumber(updateMyPage.getPhoneNumber());
+        user.setPostCode(updateMyPage.getPostCode());
+        user.setRoadAddress(updateMyPage.getRoadAddress());
+        user.setDetailAddress(updateMyPage.getDetailAddress());
+
+        String userImgUrl = user.getUserImg();
+        String defaultImgUrl = "https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg";
+
+        // 사용자가 이미지를 업로드한 경우
+        if (!updateMyPage.getUserImg().equals(defaultImgUrl)) {
+            // 사용자의 이전 이미지 URL과 기본 이미지 URL이 다를 경우에만 이전 이미지 삭제
+            if (!userImgUrl.equals(defaultImgUrl)) {
+                userImageService.deleteImg(userImgUrl);
+            }
+
+            // 새로운 이미지 저장
+            Map<String, String> savedImg = userImageService.saveImg(updateMyPage.getUserImg());
+            user.setOriginFileName(savedImg.get("originalFilename"));
+            user.setStoredName(savedImg.get("fileName"));
+            user.setUserImg(savedImg.get("accessUrl"));
         }
 
-        Map<String, String> savedImg = userImageService.saveImg(updateMyPage.getUserImg());
-        String accessUrl = savedImg.get("accessUrl");
+        // 비밀번호 업데이트
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodePass = bCryptPasswordEncoder.encode(updateMyPage.getPassword());
+        user.setPassword(encodePass);
 
-        user.setUserImg(accessUrl);
-
-        UserEntity.update(user, updateMyPage);
-
-        UserEntity savedUser = userRepository.save(user);
+        userRepository.save(user);
 
         Map<String, Object> response = new HashMap<>();
-        if (savedUser != null && savedUser.getId() > 0) {
-            response.put("success", true);
-            response.put("message", "회원 정보 수정 완료");
-            return MyPageDTO.fromEntity(savedUser);
-        } else {
-            response.put("success", false);
-            response.put("message", "회원 정보 수정 실패");
-            return MyPageDTO.fromEntity(user); // 실패 시 기존 정보 반환
-        }
+        response.put("success", true);
+        response.put("message", "회원 수정 완료");
+        return response;
     }
 
-//    public void validatedPhoneNumber(String phoneNumber) {
-//        if (phoneNumber.length() != 11) {
-//            throw new UserException(UserErrorCode.INVALID_PHONE_NUMBER);
-//        }
-//    }
-
     public void validatedPassword(String password) {
-        if (!password.matches(
-                "^[A-Za-z0-9]{8,20}$")) {
+        if (!password.matches("^[A-Za-z0-9]{8,20}$")) {
             throw new UserException(UserErrorCode.INVALID_PHONE_NUMBER_PATTERN);
         }
     }
 }
+
+

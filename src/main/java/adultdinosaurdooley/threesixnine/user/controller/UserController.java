@@ -6,6 +6,7 @@ import adultdinosaurdooley.threesixnine.user.jwt.JwtTokenProvider;
 import adultdinosaurdooley.threesixnine.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +57,13 @@ public class UserController {
     public ResponseEntity<Object> getMyPage(@PathVariable("user_id") Long userId,HttpServletRequest request){
         String header = request.getHeader("X-AUTH-TOKEN");
         String userid = jwtTokenProvider.getUserPK(header);
+
+        // userId와 userid가 일치하는지 확인
+        if (!userId.toString().equals(userid)) {
+            // userId와 userid가 일치하지 않으면 권한이 없다는 응답을 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
+        }
+
         return ResponseEntity.ok(userService.getMyPage(userId,userid));
     }
 
@@ -63,6 +71,13 @@ public class UserController {
     public ResponseEntity<Object>updateMyPage(@PathVariable("user_id") Long userId,@ModelAttribute UpdateMyPageDTO updateMyPage,HttpServletRequest request) throws IOException {
         String header = request.getHeader("X-AUTH-TOKEN");
         String userid = jwtTokenProvider.getUserPK(header);
+
+        // userId와 userid가 일치하는지 확인
+        if (!userId.toString().equals(userid)) {
+            // userId와 userid가 일치하지 않으면 권한이 없다는 응답을 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
+        }
+
         return ResponseEntity.ok(userService.updateMyPage(userId,updateMyPage,userid));
     }
 }

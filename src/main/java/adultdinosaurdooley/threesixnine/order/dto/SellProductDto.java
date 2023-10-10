@@ -20,11 +20,16 @@ public class SellProductDto {
     private List<ResponseOrderProduct> orderedProducts;
 
     public static SellProductDto from(Orders orders, List<ResponseOrderProduct> orderedProducts) {
+        // 주문된 상품들의 totalOrderedPrice 합계 계산
+        Integer totalOrderedPrice = orderedProducts.stream()
+                .mapToInt(ResponseOrderProduct::getTotalOrderedPrice)
+                .sum();
+
         return SellProductDto.builder()
                 .orderId(orders.getId())
                 .orderStatus(orders.getOrderStatus())
                 .orderedDate(orders.getOrderedAt())
-                .totalOrderPrice(orders.getTotalAmount())
+                .totalOrderPrice(totalOrderedPrice) // totalOrderedPrice 합계 할당
                 .orderedProducts(orderedProducts)
                 .build();
     }
@@ -34,7 +39,6 @@ public class SellProductDto {
     @Builder
     @AllArgsConstructor
     public static class ResponseOrderProduct{
-        private Long orderDetailId;
         private Long productId;
         private String productName;
         private Integer orderedAmount;

@@ -5,6 +5,7 @@ import adultdinosaurdooley.threesixnine.user.dto.UpdateMyPageDTO;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -64,14 +65,4 @@ public class UserEntity{
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
 
-
-    public static void update(UserEntity user, UpdateMyPageDTO updateMyPage){
-        user.setPassword(updateMyPage.getPassword());
-        user.setName(updateMyPage.getName());
-        user.setPhoneNumber(updateMyPage.getPhoneNumber());
-        user.setRoadAddress(updateMyPage.getRoadAddress());
-        user.setDetailAddress(updateMyPage.getDetailAddress());
-        user.setUserImg(String.valueOf(updateMyPage.getUserImg()));
-        user.setPostCode(updateMyPage.getPostCode());
-    }
 }

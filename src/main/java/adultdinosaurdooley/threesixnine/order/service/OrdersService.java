@@ -1,5 +1,6 @@
 package adultdinosaurdooley.threesixnine.order.service;
 
+import adultdinosaurdooley.threesixnine.cart.entity.CartProduct;
 import adultdinosaurdooley.threesixnine.order.dto.SellProductDto;
 import adultdinosaurdooley.threesixnine.order.entity.OrderDetail;
 import adultdinosaurdooley.threesixnine.order.entity.Orders;
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrdersService {
 
-    // OrdersRepository, OrderDetailRepository, UserRepository, ProductImageRepository 주입
     private final OrdersRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductImageRepository productImageRepository;
@@ -43,15 +43,17 @@ public class OrdersService {
                     List<ProductImage> productImages = getProductImagesForProduct(orderDetail.getProduct().getId());
 
                     // 첫 번째 이미지 경로 가져오기
-                    String firstImagePath = productImages.get(0).getImagePath();
+                    String firstImagePath = "";
+                    if (!productImages.isEmpty()) {
+                        firstImagePath = productImages.get(0).getImagePath();
+                    }
 
                     return SellProductDto.ResponseOrderProduct.builder()
                             .productId(orderDetail.getProduct().getId())
-                            .orderDetailId(orderDetail.getId())
                             .productName(orderDetail.getProduct().getName())
                             .orderedAmount(orderDetail.getOrderedAmount())
-                            .orderedPrice(orderDetail.getProduct().getPrice())
-                            .totalOrderedPrice(orderDetail.getProduct().getPrice() * orderDetail.getOrderedAmount())
+                            .orderedPrice(orderDetail.getOrderedPrice())
+                            .totalOrderedPrice(orderDetail.getOrderedAmount() * orderDetail.getOrderedPrice())
                             .orderedSize(orderDetail.getProduct().getSize())
                             .orderedImagePath(firstImagePath)
                             .build();

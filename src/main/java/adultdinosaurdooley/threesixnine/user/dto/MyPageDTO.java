@@ -2,6 +2,7 @@ package adultdinosaurdooley.threesixnine.user.dto;
 
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @Setter

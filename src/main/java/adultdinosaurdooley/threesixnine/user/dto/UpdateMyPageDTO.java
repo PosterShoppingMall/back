@@ -1,5 +1,6 @@
 package adultdinosaurdooley.threesixnine.user.dto;
 
+import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,4 +18,8 @@ public class UpdateMyPageDTO {
     private String roadAddress;
     private String detailAddress;
     private MultipartFile userImg;
+    private String email;
+
+
+
 }

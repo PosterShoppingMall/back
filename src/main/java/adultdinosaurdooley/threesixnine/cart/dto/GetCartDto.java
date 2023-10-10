@@ -13,11 +13,18 @@ import java.util.List;
 public class GetCartDto {
 
     private Long cartId;
+    private Integer totalCartProductAmount;
     private List<CartProduct> cartProducts;
 
     public static GetCartDto from(Cart cart, List<CartProduct> cartProducts) {
+
+        int totalAmount = cartProducts.stream()
+                .mapToInt(CartProduct::getCartProductAmount)
+                .sum();
+
         return GetCartDto.builder()
                 .cartId(cart.getId())
+                .totalCartProductAmount(totalAmount)
                 .cartProducts(cartProducts)
                 .build();
     }

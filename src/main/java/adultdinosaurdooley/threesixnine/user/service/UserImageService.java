@@ -44,4 +44,5 @@ public class UserImageService {
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
         return "이미지 삭제";
     }
+
 }
