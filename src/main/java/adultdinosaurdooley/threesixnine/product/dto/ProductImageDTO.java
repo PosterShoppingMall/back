@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ProductImageDto {
+public class ProductImageDTO {
 
     private String imagePath;
 

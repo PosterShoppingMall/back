@@ -1,5 +1,7 @@
 package adultdinosaurdooley.threesixnine.product.entity;
 
+import adultdinosaurdooley.threesixnine.cart.entity.CartProductEntity;
+import adultdinosaurdooley.threesixnine.order.entity.OrderDetailEntity;
 import adultdinosaurdooley.threesixnine.product.entity.constant.ProductSaleStatus;
 import lombok.*;
 

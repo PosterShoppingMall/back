@@ -15,5 +15,5 @@ public class ProductDetailDTO {
     private int productPrice;
     private String productSize;
     private String productContents;
-    private List<ProductImageDto> productImages;
+    private List<ProductImageDTO> productImages;
 }

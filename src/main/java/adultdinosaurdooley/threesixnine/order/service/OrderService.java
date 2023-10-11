@@ -16,7 +16,9 @@ import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +39,6 @@ public class OrderService {
     // 장바 구니 에서 주문할 상품 데이터 를 전달 받아서 주문 생성
 
     public Long orders(List<OrderDTO> orderDTOList, UserEntity userEntity){
-
-//        OrderEntity orderEntity = orderRepository.findByUserEntityId(userEntity.getId());
 
         // orderDTO 로 OrderDetail 생성
         List<OrderDetailEntity> orderDetailEntityList = new ArrayList<>();
@@ -115,7 +115,5 @@ public class OrderService {
        }
 
 
-
-        //retEntity.urn
     }
 }

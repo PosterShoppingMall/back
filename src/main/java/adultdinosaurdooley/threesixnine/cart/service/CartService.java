@@ -20,6 +20,9 @@ import adultdinosaurdooley.threesixnine.product.repository.ProductRepository;
 
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -126,4 +129,34 @@ public class CartService {
         return orderId;
     }
 
+    public CartProductListDTO findCartProductList(long userId) {
+        CartEntity validateCartEntity = validateCart(userId);
+
+        List<CartProductEntity> cartProductEntityList = validateCartEntity.getCartProductEntities();
+
+        List<CartProductListDTO.CartProduct> cartProductList;
+        cartProductList = cartProductEntityList.stream().map(
+                CartProductEntity -> {
+                    String url = String.valueOf(CartProductEntity.getProductEntity().getProductImageEntity().get(0).getImagePath());
+                    return CartProductListDTO.CartProduct.builder()
+                            .productId(CartProductEntity.getProductEntity().getId())
+                            .imageUrl(url)
+                            .productName(CartProductEntity.getProductEntity().getProductName())
+                            .cartProductAmount(CartProductEntity.getCartCnt())
+                            .cartProductTotalPrice(CartProductEntity.getCartCnt() * CartProductEntity.getProductEntity().getProductPrice())
+                            .productPrice(CartProductEntity.getProductEntity().getProductPrice())
+                            .build();
+                }).collect(Collectors.toList());
+        return CartProductListDTO.from(validateCartEntity, cartProductList);
+    }
+
+    private CartEntity validateCart(Long userId) {
+        CartEntity cartEntity = cartRepository.findByUserEntityId(userId);
+        if (cartEntity == null) {
+            throw new OrderException(OrderErrorCode.USER_NOT_FOUND);
+        }
+        return cartEntity;
+    }
+
 }
+

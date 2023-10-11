@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
+@Table(name = "order_detail")
 public class OrderDetailEntity {
 
     @Id
@@ -40,8 +41,8 @@ public class OrderDetailEntity {
         orderDetailEntity.setOrderedAmount(orderedAmount);      // 주문 수량
         orderDetailEntity.setOrderedPrice(productEntity.getProductPrice());
 
-        productEntity.getStock().removeStock(orderedAmount);   // 주문수량 만큼 재고 수량 감소
-        productEntity.getStock().addSellAmount(orderedAmount);
+        productEntity.getStockEntity().removeStock(orderedAmount);   // 주문수량 만큼 재고 수량 감소
+        productEntity.getStockEntity().addSellAmount(orderedAmount);
         return orderDetailEntity;
     }
 }

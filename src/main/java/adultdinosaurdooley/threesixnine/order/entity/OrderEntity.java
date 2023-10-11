@@ -28,11 +28,8 @@ public class OrderEntity {
     @Column(name = "ordered_at", nullable = false)
     private LocalDateTime orderedAt;  // 구매날짜
 
-//    @Column(name="total_amount", nullable = false)
-//    private Integer totalAmount;
 
-
-    @OneToOne(mappedBy = "orderEntity", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "orderEntity", cascade =  CascadeType.REMOVE, fetch = FetchType.LAZY)
     private DeliveryInformation deliveryInformation;
 
     @ManyToOne(fetch = FetchType.LAZY)

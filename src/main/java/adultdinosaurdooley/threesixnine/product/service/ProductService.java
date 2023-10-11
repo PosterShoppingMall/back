@@ -2,7 +2,7 @@ package adultdinosaurdooley.threesixnine.product.service;
 
 import adultdinosaurdooley.threesixnine.product.dto.MainPageDTO;
 import adultdinosaurdooley.threesixnine.product.dto.ProductDetailDTO;
-import adultdinosaurdooley.threesixnine.product.dto.ProductImageDto;
+import adultdinosaurdooley.threesixnine.product.dto.ProductImageDTO;
 import adultdinosaurdooley.threesixnine.product.dto.ProductListDTO;
 import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
 import adultdinosaurdooley.threesixnine.product.entity.ProductImageEntity;
@@ -29,16 +29,16 @@ public class ProductService {
                 = productRepository.findTop6ByOrderBySellAmountDesc(PageRequest.of(0, 6));
         mainPageMap.put("best", convertListToMainPageDTOList(bestProductListEntity));
         List<ProductEntity> illustrationProductListEntity
-                = productRepository.findTop6ByCategoryOrderByCreatedAt("illustration",PageRequest.of(0, 6));
+                = productRepository.findTop6ByCategoryOrderByCreatedAt("illustration", PageRequest.of(0, 6));
         mainPageMap.put("illustration", convertListToMainPageDTOList(illustrationProductListEntity));
         List<ProductEntity> paintingProductListEntity
-                = productRepository.findTop6ByCategoryOrderByCreatedAt("painting",PageRequest.of(0, 6));
+                = productRepository.findTop6ByCategoryOrderByCreatedAt("painting", PageRequest.of(0, 6));
         mainPageMap.put("painting", convertListToMainPageDTOList(paintingProductListEntity));
         List<ProductEntity> photographyProductListEntity
-                = productRepository.findTop6ByCategoryOrderByCreatedAt("photography",PageRequest.of(0, 6));
+                = productRepository.findTop6ByCategoryOrderByCreatedAt("photography", PageRequest.of(0, 6));
         mainPageMap.put("photography", convertListToMainPageDTOList(photographyProductListEntity));
         List<ProductEntity> typographyProductListEntity
-                = productRepository.findTop6ByCategoryOrderByCreatedAt("typography",PageRequest.of(0, 6));
+                = productRepository.findTop6ByCategoryOrderByCreatedAt("typography", PageRequest.of(0, 6));
         mainPageMap.put("typography", convertListToMainPageDTOList(typographyProductListEntity));
         return ResponseEntity.status(200).body(mainPageMap);
     }
@@ -46,14 +46,14 @@ public class ProductService {
     public ResponseEntity<ProductDetailDTO> findProductById(Long productId) {
         Optional<ProductEntity> byId = productRepository.findById(productId);
         ProductEntity productEntity = byId.get();
-        List<ProductImageDto> productImageDtoList = new ArrayList<>();
-        for (ProductImageEntity productImageEntity : productEntity.getProductImageEntity()){
-            ProductImageDto imageDto = ProductImageDto
+        List<ProductImageDTO> productImageDTOList = new ArrayList<>();
+        for (ProductImageEntity productImageEntity : productEntity.getProductImageEntity()) {
+            ProductImageDTO imageDto = ProductImageDTO
                     .builder()
                     .imageNum(productImageEntity.getImageNum())
                     .imagePath(productImageEntity.getImagePath())
                     .build();
-            productImageDtoList.add(imageDto);
+            productImageDTOList.add(imageDto);
         }
 
         ProductDetailDTO productDetailDTO = ProductDetailDTO
@@ -63,7 +63,7 @@ public class ProductService {
                 .productSize(productEntity.getProductSize())
                 .productContents(productEntity.getProductContents())
                 .productPrice(productEntity.getProductPrice())
-                .productImages(productImageDtoList)
+                .productImages(productImageDTOList)
                 .build();
         return ResponseEntity.status(200).body(productDetailDTO);
     }
@@ -84,10 +84,10 @@ public class ProductService {
     public ResponseEntity<Page<ProductListDTO>> findProductListByCategory(String category, int size, int page, String sort) {
         Pageable pageable = setPageable(size, page, sort);
         Page<ProductEntity> productList;
-        if(category.equals("*")){
+        if (category.equals("*")) {
             productList = productRepository.findProducts(pageable);
         } else {
-            productList = productRepository.findByCategory(category,pageable);
+            productList = productRepository.findByCategory(category, pageable);
         }
         return ResponseEntity.status(200).body(convertPageToDTOList(productList));
     }
@@ -114,8 +114,8 @@ public Page<ProductListDTO> convertPageToDTOList(Page<ProductEntity> page) {
             .map(this::convertToProductListDTO)
             .collect(Collectors.toList());
 
-    return new PageImpl<>(productListDTOList, page.getPageable(), page.getTotalElements());
-}
+        return new PageImpl<>(productListDTOList, page.getPageable(), page.getTotalElements());
+    }
 
     public ProductListDTO convertToProductListDTO(ProductEntity productEntity) {
         String url = String.valueOf(productRepository.findById(productEntity.getId()).get().getProductImageEntity().get(0).getImagePath());
@@ -137,7 +137,7 @@ public Page<ProductListDTO> convertPageToDTOList(Page<ProductEntity> page) {
                 .collect(Collectors.toList());
     }
 
-    public MainPageDTO convertToMainPageDTO(ProductEntity productEntity){
+    public MainPageDTO convertToMainPageDTO(ProductEntity productEntity) {
         String url = String.valueOf(productRepository.findById(productEntity.getId()).get().getProductImageEntity().get(0).getImagePath());
         MainPageDTO dto = MainPageDTO
                 .builder()
