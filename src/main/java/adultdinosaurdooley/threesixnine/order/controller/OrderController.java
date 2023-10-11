@@ -9,6 +9,7 @@ import adultdinosaurdooley.threesixnine.order.exception.OrderErrorCode;
 import adultdinosaurdooley.threesixnine.order.exception.OrderException;
 import adultdinosaurdooley.threesixnine.order.service.OrderService;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
+import adultdinosaurdooley.threesixnine.user.jwt.JwtTokenProvider;
 import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/369/order")
 public class OrderController {
 
-    @Getter
     private final CartService cartService;
     private final UserRepository userRepository;
     private final OrderService orderService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/{userId}")
     public ResponseEntity order(@PathVariable("userId") long userId,

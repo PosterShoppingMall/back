@@ -36,7 +36,7 @@ public class UserController {
         return userService.login(login);
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         String header = request.getHeader("X-AUTH-TOKEN");
         String userId = jwtTokenProvider.getUserPK(header);
@@ -49,4 +49,19 @@ public class UserController {
         String userid = jwtTokenProvider.getUserPK(header);
         return userService.delete(userid);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> update(@ModelAttribute UserDTO userDTO, HttpServletRequest request) {
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userid = jwtTokenProvider.getUserPK(header);
+        return userService.update(userid, userDTO);
+    }
+
+    @PostMapping("/myPage")
+    public ResponseEntity<?> myPage(HttpServletRequest request) {
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userId = jwtTokenProvider.getUserPK(header);
+        return userService.myPage(userId);
+    }
+
 }

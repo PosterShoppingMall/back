@@ -9,6 +9,7 @@ import adultdinosaurdooley.threesixnine.order.entity.OrderEntity;
 import adultdinosaurdooley.threesixnine.order.exception.OrderErrorCode;
 import adultdinosaurdooley.threesixnine.order.exception.OrderException;
 import adultdinosaurdooley.threesixnine.order.repository.DeliveryInformationRepository;
+import adultdinosaurdooley.threesixnine.order.repository.OrderDetailRepository;
 import adultdinosaurdooley.threesixnine.order.repository.OrderRepository;
 import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
 import adultdinosaurdooley.threesixnine.product.repository.ProductRepository;
@@ -36,6 +37,8 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final DeliveryInformationRepository deliveryInformationRepository;
+    private final OrderDetailRepository orderDetailRepository;
+    private final ImageFileRepository imageFileRepository;
     // 장바 구니 에서 주문할 상품 데이터 를 전달 받아서 주문 생성
 
     public Long orders(List<OrderDTO> orderDTOList, UserEntity userEntity){

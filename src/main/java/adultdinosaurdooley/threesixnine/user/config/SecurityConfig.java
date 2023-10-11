@@ -38,9 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 사용 안함
                 .and()
                 .authorizeRequests() // 요청에 대한 사용 권한 체크
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/cart/**").access("hasRole('ADMIN') or hasRole('USER')")
-                .antMatchers("/order/**").access("hasRole('ADMIN') or hasRole('USER')")
+//                .antMatchers("/369/admin/**").hasRole("ADMIN")
+//                .antMatchers("/369/cart/**").access("hasRole('ADMIN') or hasRole('USER')")
+//                .antMatchers("/369/order/**").access("hasRole('ADMIN') or hasRole('USER')")
                 .anyRequest().permitAll() // 그외 나머지 요청은 전부 허용
                 .and()
                 .exceptionHandling()

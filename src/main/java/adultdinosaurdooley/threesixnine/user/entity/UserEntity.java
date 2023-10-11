@@ -3,6 +3,7 @@ package adultdinosaurdooley.threesixnine.user.entity;
 import adultdinosaurdooley.threesixnine.cart.entity.CartEntity;
 import adultdinosaurdooley.threesixnine.order.entity.OrderEntity;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@DynamicUpdate
 @Table(name = "user")
 public class UserEntity {
 

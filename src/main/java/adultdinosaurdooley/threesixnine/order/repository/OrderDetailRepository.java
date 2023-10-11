@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetailEntity, Long> {
 
+    Page<OrderDetailEntity> findAllByOrderEntityId(Long id, Pageable pageable);
 }

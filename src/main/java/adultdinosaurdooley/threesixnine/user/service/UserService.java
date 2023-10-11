@@ -4,6 +4,7 @@ import adultdinosaurdooley.threesixnine.s3.S3Service;
 import adultdinosaurdooley.threesixnine.user.dto.LoginTokenSaveDto;
 import adultdinosaurdooley.threesixnine.user.dto.Token;
 import adultdinosaurdooley.threesixnine.user.dto.UserDTO;
+import adultdinosaurdooley.threesixnine.user.dto.UserDetailDto;
 import adultdinosaurdooley.threesixnine.user.entity.RefreshToken;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import adultdinosaurdooley.threesixnine.user.jwt.JwtTokenProvider;
@@ -110,27 +111,6 @@ public class UserService {
         Map<String, String> result = new HashMap<>();
         if (findByEmail(login.get("email"))) {
 
-            if (login.get("email").equals("admin") && login.get("password").equals("1234")) {
-                UserEntity userEntity = userRepository.findByEmail(login.get("email"));
-                LoginTokenSaveDto loginTokenSaveDto = LoginTokenSaveDto.builder()
-                                                                       .id(userEntity.getId())
-                                                                       .email(userEntity.getEmail())
-                                                                       .build();
-                Token token = jwtTokenProvider.createToken(loginTokenSaveDto.getId(), loginTokenSaveDto);
-                RefreshToken refreshToken = RefreshToken.builder()
-                                                        .token(token.getRefreshToken())
-                                                        .userEntity(userEntity)
-                                                        .build();
-                Optional<RefreshToken> email = refreshTokenRepository.findByUserEntity_Id(userRepository.findByEmail(login.get("email"))
-                                                                                                        .getId());
-                if (email.isPresent()) {
-                    return ResponseEntity.status(200).body(token);
-                } else {
-                    refreshTokenRepository.save(refreshToken);
-                }
-                return ResponseEntity.status(200).body(token);
-            }
-
             if (passwordCheck(login.get("email"), login.get("password"))) {
                 UserEntity userEntity = userRepository.findByEmail(login.get("email"));
                 LoginTokenSaveDto loginTokenSaveDto = LoginTokenSaveDto.builder()
@@ -192,7 +172,7 @@ public class UserService {
         String userImgUrl = findId.getUserImg();
         RefreshToken refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
 
-        if (userImgUrl.matches("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defautimg.jpg")) {
+        if (userImgUrl.matches("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")) {
             refreshTokenRepository.deleteById(refreshToken.getId());
             userRepository.deleteById(findId.getId());
             return ResponseEntity.status(200).body("회원탈퇴 완료");
@@ -209,4 +189,104 @@ public class UserService {
             }
         }
     }
+
+    public ResponseEntity<?> update(String userid, UserDTO userDTO) {
+        UserEntity findId = userRepository.findById(Long.valueOf(userid)).get();
+        //비밀번호 변경안했을때
+        if (passwordCheck(userDTO.getEmail(), userDTO.getPassword())) {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            String encodePass = bCryptPasswordEncoder.encode(userDTO.getPassword());
+            findId.setName(userDTO.getName());
+            findId.setPassword(encodePass);
+            findId.setPhoneNumber(userDTO.getPhoneNumber());
+            findId.setPostCode(userDTO.getPostCode());
+            findId.setRoadAddress(userDTO.getRoadAddress());
+            findId.setDetailAddress(userDTO.getDetailAddress());
+
+            // 사진변경 안했을 때
+            if (userDTO.getUserImg().isEmpty()){
+                findId.setUserImg(findId.getUserImg());
+                findId.setOriginFileName(findId.getOriginFileName());
+                findId.setStoredName(findId.getStoredName());
+                userRepository.save(findId);
+            }
+
+            if (!userDTO.getUserImg().isEmpty()) {
+                Map<String, String> savedImg = null;
+                try {
+                    if (findId.getUserImg().equals("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")){
+                        savedImg = userImageService.saveImg(userDTO.getUserImg());
+                        findId.setUserImg(savedImg.get("accessUrl"));
+                        findId.setOriginFileName(savedImg.get("originalFilename"));
+                        findId.setStoredName(savedImg.get("fileName"));
+                    }else{
+                        userImageService.deleteImg(findId.getUserImg());
+                        savedImg = userImageService.saveImg(userDTO.getUserImg());
+                        findId.setUserImg(savedImg.get("accessUrl"));
+                        findId.setOriginFileName(savedImg.get("originalFilename"));
+                        findId.setStoredName(savedImg.get("fileName"));
+                    }
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                userRepository.save(findId);
+            }
+            // 비밀번호 변경했을때
+        } else {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            String encodePass = bCryptPasswordEncoder.encode(userDTO.getPassword());
+            findId.setName(userDTO.getName());
+            findId.setPassword(encodePass);
+            findId.setPhoneNumber(userDTO.getPhoneNumber());
+            findId.setPostCode(userDTO.getPostCode());
+            findId.setRoadAddress(userDTO.getRoadAddress());
+            findId.setDetailAddress(userDTO.getDetailAddress());
+
+            // 사진변경 안했을 때
+            if (userDTO.getUserImg().isEmpty()){
+                findId.setUserImg(findId.getUserImg());
+                findId.setOriginFileName(findId.getOriginFileName());
+                findId.setStoredName(findId.getStoredName());
+                userRepository.save(findId);
+            }
+
+            if (!userDTO.getUserImg().isEmpty()) {
+                Map<String, String> savedImg = null;
+                try {
+                    if (findId.getUserImg().equals("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")){
+                        savedImg = userImageService.saveImg(userDTO.getUserImg());
+                        findId.setUserImg(savedImg.get("accessUrl"));
+                        findId.setOriginFileName(savedImg.get("originalFilename"));
+                        findId.setStoredName(savedImg.get("fileName"));
+                    }else {
+                        userImageService.deleteImg(findId.getUserImg());
+                        savedImg = userImageService.saveImg(userDTO.getUserImg());
+                        findId.setUserImg(savedImg.get("accessUrl"));
+                        findId.setOriginFileName(savedImg.get("originalFilename"));
+                        findId.setStoredName(savedImg.get("fileName"));
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                userRepository.save(findId);
+            }
+        }
+        return ResponseEntity.status(200).body("회원수정 완료");
+    }
+
+    public ResponseEntity<?> myPage(String userId) {
+        UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
+        UserDetailDto userDetailDto = UserDetailDto.builder()
+                .email(findId.getEmail())
+                .name(findId.getName())
+                .phoneNumber(findId.getPhoneNumber())
+                .postCode(findId.getPostCode())
+                .roadAddress(findId.getRoadAddress())
+                .detailAddress(findId.getDetailAddress())
+                .userImgUrl(findId.getUserImg())
+                .build();
+        return ResponseEntity.status(200).body(userDetailDto);
+    }
+
 }
