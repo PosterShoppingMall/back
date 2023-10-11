@@ -8,7 +8,7 @@ import adultdinosaurdooley.threesixnine.cart.repository.CartRepository;
 import adultdinosaurdooley.threesixnine.cart.service.exception.CartErrorCode;
 import adultdinosaurdooley.threesixnine.cart.service.exception.CartException;
 
-import adultdinosaurdooley.threesixnine.product.entity.ProductImage;
+import adultdinosaurdooley.threesixnine.product.entity.ProductImageEntity;
 import adultdinosaurdooley.threesixnine.product.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,15 +44,15 @@ public class CartService {
         List<GetCartDto.CartProduct> cartProductList = cartProductPage.getContent().stream()
                 .map(getCart -> {
                     // 상품 이미지 리스트 가져오기
-                    List<ProductImage> productImages = getProductImagesForProduct(getCart.getProduct().getId());
+                    List<ProductImageEntity> productImages = getProductImagesForProduct(getCart.getProduct().getId());
 
                     // 첫 번째 이미지 경로 가져오기
                     String firstImagePath = productImages.isEmpty() ? "" : productImages.get(0).getImagePath();
                     return GetCartDto.CartProduct.builder()
                             .productId(getCart.getProduct().getId())
                             .productName(getCart.getProduct().getName())
-                            .cartCnt(getCart.getCartCnt())
-                            .cartProductAmount(getCart.getCartCnt() * getCart.getProduct().getPrice()) // 3에서 계산한 총 가격을 설정합니다.
+                            .cartProductAmount(getCart.getCartCnt())
+                            .cartProductAmountPrice(getCart.getCartCnt() * getCart.getProduct().getPrice()) // 3에서 계산한 총 가격을 설정합니다.
                             .productPrice(getCart.getProduct().getPrice())
                             .productImagePath(firstImagePath)
                             .build();
@@ -68,7 +68,7 @@ public class CartService {
                 .orElseThrow(() -> new CartException(CartErrorCode.USER_NOT_FOUND));
     }
 
-    private List<ProductImage> getProductImagesForProduct(Long productId) {
+    private List<ProductImageEntity> getProductImagesForProduct(Long productId) {
         // ProductImageRepository를 사용하여 productId에 해당하는 ProductImage 리스트 가져오기
         return productImageRepository.findByProductId(productId);
     }

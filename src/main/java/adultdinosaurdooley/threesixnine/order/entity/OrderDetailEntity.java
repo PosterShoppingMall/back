@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.order.entity;
 
-import adultdinosaurdooley.threesixnine.product.entity.Product;
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,8 +10,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name="orderDetail")
 @Entity
-public class OrderDetail {
+public class OrderDetailEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,7 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    private Orders orders;
+    private OrderEntity orders;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
@@ -28,7 +29,7 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Product_id")
-    private Product product;
+    private ProductEntity product;
 
     @Column(name="ordered_amount", nullable = false)
     private Integer orderedAmount;

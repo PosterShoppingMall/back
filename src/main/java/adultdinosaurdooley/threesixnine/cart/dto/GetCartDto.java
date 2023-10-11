@@ -13,18 +13,18 @@ import java.util.List;
 public class GetCartDto {
 
     private Long cartId;
-    private Integer totalCartProductAmount;
+    private Integer totalCartProductPrice;
     private List<CartProduct> cartProducts;
 
     public static GetCartDto from(Cart cart, List<CartProduct> cartProducts) {
 
-        int totalAmount = cartProducts.stream()
+        int totalPrice = cartProducts.stream()
                 .mapToInt(CartProduct::getCartProductAmount)
                 .sum();
 
         return GetCartDto.builder()
                 .cartId(cart.getId())
-                .totalCartProductAmount(totalAmount)
+                .totalCartProductPrice(totalPrice)
                 .cartProducts(cartProducts)
                 .build();
     }
@@ -37,8 +37,8 @@ public class GetCartDto {
         private Long productId;
         private String productName;
         private Integer productPrice;
-        private Integer cartCnt;
         private Integer cartProductAmount;
+        private Integer cartProductAmountPrice;
         private String productImagePath;
     }
 }

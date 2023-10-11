@@ -13,8 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name="product")
 @Entity
-public class Product {
+public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +26,7 @@ public class Product {
     private String name;
 
     @OneToOne(mappedBy = "product")
-    private Stock stock;
+    private StockEntity stock;
 
     @Column(name="category")
     private String category;
@@ -46,18 +47,11 @@ public class Product {
     private LocalDate createDate; // 날짜
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductImage> productImages = new ArrayList<>();
+    private List<ProductImageEntity> productImages = new ArrayList<>();
 
     @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
     public void createDate() {
         this.createDate = LocalDate.now();
     }
 
-    public int getStock() {
-        return this.stock.getStockAmount();
-    }
-
-    public void setStock(int stockAmount) {
-        this.stock.setStockAmount(stockAmount);
-    }
 }

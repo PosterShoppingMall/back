@@ -1,7 +1,7 @@
 package adultdinosaurdooley.threesixnine.user.jwt;
 
-import adultdinosaurdooley.threesixnine.user.dto.LoginTokenSaveDTO;
-import adultdinosaurdooley.threesixnine.user.dto.TokenDTO;
+import adultdinosaurdooley.threesixnine.user.dto.LoginTokenSaveDto;
+import adultdinosaurdooley.threesixnine.user.dto.Token;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class JwtTokenProvider {
     private String ROLE = "role";
 
     // JWT 토큰 생성
-    public TokenDTO createToken(Long userPK, LoginTokenSaveDTO loginTokenSaveDto) {
+    public Token createToken(Long userPK, LoginTokenSaveDto loginTokenSaveDto) {
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPK)); // JWT payload에 저장되는 정보 단위
         claims.put(ROLE, loginTokenSaveDto); // 정보 저장 (key-value)
         Date now = new Date();
@@ -58,7 +58,7 @@ public class JwtTokenProvider {
                                   .signWith(SignatureAlgorithm.HS256, secretKey)
                                   .compact();
 
-        return TokenDTO.builder()
+        return Token.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .accessTokenExpireDate(tokenExpiryCalc)

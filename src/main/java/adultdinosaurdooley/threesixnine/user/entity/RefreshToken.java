@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Table(name = "refresh_token")
-public class RefreshTokenEntity extends BaseEntity {
+public class RefreshToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,12 +23,12 @@ public class RefreshTokenEntity extends BaseEntity {
     @Column(nullable = false)
     private String token;
 
-    public RefreshTokenEntity updateToken(String token){
+    public RefreshToken updateToken(String token){
         this.token = token;
         return this;
     }
     @Builder
-    public RefreshTokenEntity(UserEntity userEntity, String token){
+    public RefreshToken(UserEntity userEntity, String token){
         this.userEntity = userEntity;
         this.token = token;
     }

@@ -1,9 +1,8 @@
 package adultdinosaurdooley.threesixnine.order.controller;
 
 import adultdinosaurdooley.threesixnine.order.dto.SellProductDto;
-import adultdinosaurdooley.threesixnine.order.service.OrdersService;
+import adultdinosaurdooley.threesixnine.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/369")
 public class OrdersController {
 
-    private final OrdersService orderService;
+    private final OrderService orderService;
     @GetMapping("/order/{userId}")
     public ResponseEntity<SellProductDto> ordersList(
             @PathVariable("userId") Long userId,

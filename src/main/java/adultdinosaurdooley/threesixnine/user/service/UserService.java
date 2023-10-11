@@ -2,7 +2,7 @@ package adultdinosaurdooley.threesixnine.user.service;
 
 
 import adultdinosaurdooley.threesixnine.user.dto.*;
-import adultdinosaurdooley.threesixnine.user.entity.RefreshTokenEntity;
+import adultdinosaurdooley.threesixnine.user.entity.RefreshToken;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import adultdinosaurdooley.threesixnine.user.jwt.JwtTokenProvider;
 import adultdinosaurdooley.threesixnine.user.repository.RefreshTokenRepository;
@@ -116,16 +116,16 @@ public class UserService {
 
             if (login.get("email").equals("admin") && login.get("password").equals("1234")) {
                 UserEntity userEntity = userRepository.findByEmail(login.get("email"));
-                LoginTokenSaveDTO loginTokenSaveDto = LoginTokenSaveDTO.builder()
+                LoginTokenSaveDto loginTokenSaveDto = LoginTokenSaveDto.builder()
                         .id(userEntity.getId())
                         .email(userEntity.getEmail())
                         .build();
-                TokenDTO token = jwtTokenProvider.createToken(loginTokenSaveDto.getId(), loginTokenSaveDto);
-                RefreshTokenEntity refreshToken = RefreshTokenEntity.builder()
+                Token token = jwtTokenProvider.createToken(loginTokenSaveDto.getId(), loginTokenSaveDto);
+                RefreshToken refreshToken = RefreshToken.builder()
                         .token(token.getRefreshToken())
                         .userEntity(userEntity)
                         .build();
-                Optional<RefreshTokenEntity> email = refreshTokenRepository.findByUserEntity_Id(userRepository.findByEmail(login.get("email"))
+                Optional<RefreshToken> email = refreshTokenRepository.findByUserEntity_Id(userRepository.findByEmail(login.get("email"))
                         .getId());
                 if (email.isPresent()) {
                     return ResponseEntity.status(200).body(token);
@@ -137,16 +137,16 @@ public class UserService {
 
             if (passwordCheck(login.get("email"), login.get("password"))) {
                 UserEntity userEntity = userRepository.findByEmail(login.get("email"));
-                LoginTokenSaveDTO loginTokenSaveDto = LoginTokenSaveDTO.builder()
+                LoginTokenSaveDto loginTokenSaveDto = LoginTokenSaveDto.builder()
                         .id(userEntity.getId())
                         .email(userEntity.getEmail())
                         .build();
-                TokenDTO token = jwtTokenProvider.createToken(loginTokenSaveDto.getId(), loginTokenSaveDto);
-                RefreshTokenEntity refreshToken = RefreshTokenEntity.builder()
+                Token token = jwtTokenProvider.createToken(loginTokenSaveDto.getId(), loginTokenSaveDto);
+                RefreshToken refreshToken = RefreshToken.builder()
                         .token(token.getRefreshToken())
                         .userEntity(userEntity)
                         .build();
-                Optional<RefreshTokenEntity> email = refreshTokenRepository.findByUserEntity_Id(userRepository.findByEmail(login.get("email"))
+                Optional<RefreshToken> email = refreshTokenRepository.findByUserEntity_Id(userRepository.findByEmail(login.get("email"))
                         .getId());
                 if (email.isPresent()) {
                     return ResponseEntity.status(200).body(token);
@@ -182,7 +182,7 @@ public class UserService {
 
     public ResponseEntity<?> logout(String userId) {
         UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
-        RefreshTokenEntity refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
+        RefreshToken refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
         if (refreshToken != null) {
             refreshTokenRepository.deleteById(refreshToken.getId());
             return ResponseEntity.status(200).body("로그아웃 완료");
@@ -194,7 +194,7 @@ public class UserService {
     public ResponseEntity<?> delete(String id) {
         UserEntity findId = userRepository.findById(Long.valueOf(id)).get();
         String userImgUrl = findId.getUserImg();
-        RefreshTokenEntity refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
+        RefreshToken refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
 
         if (userImgUrl.matches("https://channitestbucket.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")) {
             refreshTokenRepository.deleteById(refreshToken.getId());

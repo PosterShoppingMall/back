@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Stock {
+public class StockEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Stock {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id",nullable = false)
-    private Product product;
+    private ProductEntity product;
 
     @Column(name = "stock_amount", nullable = false)
     private Integer stockAmount;
@@ -27,7 +27,7 @@ public class Stock {
     @Column(name = "sell_amount", nullable = false)
     private Integer sellAmount;
 
-    public Stock(Product product, int stockAmount, int sellAmount){
+    public StockEntity(ProductEntity product, int stockAmount, int sellAmount){
         this.product =product;
         this.stockAmount =stockAmount;
         this.sellAmount = sellAmount;

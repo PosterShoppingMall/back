@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.cart.entity;
 
-import adultdinosaurdooley.threesixnine.product.entity.Product;
+import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +25,7 @@ public class CartProduct {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
-    private Product product;
+    private ProductEntity product;
 
     @Column(name="cart_cnt", nullable = false)
     private Integer cartCnt;

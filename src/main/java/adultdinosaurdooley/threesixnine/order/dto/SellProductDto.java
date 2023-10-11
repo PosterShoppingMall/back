@@ -1,6 +1,6 @@
 package adultdinosaurdooley.threesixnine.order.dto;
 
-import adultdinosaurdooley.threesixnine.order.entity.Orders;
+import adultdinosaurdooley.threesixnine.order.entity.OrderEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ public class SellProductDto {
     private Integer totalOrderPrice;
     private List<ResponseOrderProduct> orderedProducts;
 
-    public static SellProductDto from(Orders orders, List<ResponseOrderProduct> orderedProducts) {
+    public static SellProductDto from(OrderEntity orders, List<ResponseOrderProduct> orderedProducts) {
         // 주문된 상품들의 totalOrderedPrice 합계 계산
         Integer totalOrderedPrice = orderedProducts.stream()
                 .mapToInt(ResponseOrderProduct::getTotalOrderedPrice)
