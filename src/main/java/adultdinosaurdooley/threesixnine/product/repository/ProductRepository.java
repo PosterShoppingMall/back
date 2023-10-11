@@ -14,27 +14,27 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     // 메인페이지
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stockEntity s WHERE p.saleStatus = 'SELL' ORDER BY p.createdAt DESC")
     List<ProductEntity> findTop6ByOrderByCreatedAt(Pageable pageable);
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' AND p.category = :category ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stockEntity s WHERE p.saleStatus = 'SELL' AND p.category = :category ORDER BY p.createdAt DESC")
     List<ProductEntity> findTop6ByCategoryOrderByCreatedAt(@Param("category") String category, Pageable pageable);
 
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' ORDER BY s.sellAmount DESC")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stockEntity s WHERE p.saleStatus = 'SELL' ORDER BY s.sellAmount DESC")
     List<ProductEntity> findTop6ByOrderBySellAmountDesc(Pageable pageable);
 
     // 검색
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' AND p.productName LIKE %:keyword% ")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stockEntity s WHERE p.saleStatus = 'SELL' AND p.productName LIKE %:keyword% ")
     Page<ProductEntity> findByProductNameContaining(Pageable pageable, @Param("keyword") String keyword);
 
     // 전체 조회
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL'")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stockEntity s WHERE p.saleStatus = 'SELL'")
     Page<ProductEntity> findProducts(Pageable pageable);
 
     // 카테고리 조회
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' AND p.category = :category")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stockEntity s WHERE p.saleStatus = 'SELL' AND p.category = :category")
     Page<ProductEntity> findByCategory(@Param("category") String category, Pageable pageable);
 
     // 베스트 카테고리
-    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stock s WHERE p.saleStatus = 'SELL' ORDER BY s.sellAmount DESC, p.createdAt DESC")
+    @Query("SELECT p FROM ProductEntity p INNER JOIN p.stockEntity s WHERE p.saleStatus = 'SELL' ORDER BY s.sellAmount DESC, p.createdAt DESC")
     Page<ProductEntity> findTop30ByOrderBySellAmountDesc(Pageable pageable);
 }

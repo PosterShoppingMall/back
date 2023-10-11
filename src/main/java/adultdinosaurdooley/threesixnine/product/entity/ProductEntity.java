@@ -43,10 +43,20 @@ public class ProductEntity extends BaseTimeEntity{
     private ProductSaleStatus saleStatus; //상품 판매 상태
 
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<ProductImageEntity> productImageEntity = new ArrayList<>();
 
+    @OneToOne(mappedBy = "productEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private StockEntity stockEntity;
 
-    @OneToOne(mappedBy = "product", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private StockEntity stock;
+    //cartProduct
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<CartProductEntity> cartProductEntityList = new ArrayList<>();
+
+    //orderDetail -good
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<OrderDetailEntity> orderDetailEntityList = new ArrayList<>();
+
+
+
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ProductImageDto {
+public class ProductImageDTO {
 
     private String imagePath;
 

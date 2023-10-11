@@ -34,7 +34,7 @@ public class AdminService {
     public ResponseEntity<Map<String, String>> resisterProducts(List<MultipartFile> multipartFilelist, ProductDTO productDTO) throws IOException {
 
         // DTO -> Entity로 변환
-        ProductEntity product = ProductEntity.builder()
+        ProductEntity productEntity = ProductEntity.builder()
                                              .productName(productDTO.getProductName())
                                              .productPrice(productDTO.getProductPrice())
                                              .category(productDTO.getCategory())
@@ -43,12 +43,12 @@ public class AdminService {
                                              .saleStatus(productDTO.getSaleStatus())
                                              .build();
         //상품 db 저장
-        Long id = adminProductRepository.save(product)
+        Long id = adminProductRepository.save(productEntity)
                                         .getId();
 
         // stock dto -> entity 로 변환
         StockEntity stockEntity = StockEntity.builder()
-                                             .product(product)
+                                             .productEntity(productEntity)
                                              .stockAmount(productDTO.getStockDTO().getStockAmount())
                                              .sellAmount(productDTO.getStockDTO().getSellAmount())
                                              .build();
@@ -58,7 +58,7 @@ public class AdminService {
 
         //이미지 db 저장
         if (multipartFilelist != null) {
-            s3Service.upload(multipartFilelist, "static", product);
+            s3Service.upload(multipartFilelist, "static", productEntity);
         }
 
         //상품이 제대로 등록 되었는 지 확인
@@ -88,16 +88,16 @@ public class AdminService {
         //1. 상품 수정
         if (productOptional.isPresent()) {
             //product 엔티티 값 가져오기
-            ProductEntity product = productOptional.get();
+            ProductEntity productEntity = productOptional.get();
 
             //dto-> entity 변환
-            product.setProductName(updateProductDTO.getProductName());
-            product.setProductPrice(updateProductDTO.getProductPrice());
-            product.setProductSize(updateProductDTO.getProductSize());
-            product.setProductContents(updateProductDTO.getProductContents());
-            product.getStock().setStockAmount(updateProductDTO.getStockAmount());
-            product.setCategory(updateProductDTO.getCategory());
-            product.setSaleStatus(updateProductDTO.getSaleStatus());
+            productEntity.setProductName(updateProductDTO.getProductName());
+            productEntity.setProductPrice(updateProductDTO.getProductPrice());
+            productEntity.setProductSize(updateProductDTO.getProductSize());
+            productEntity.setProductContents(updateProductDTO.getProductContents());
+            productEntity.getStockEntity().setStockAmount(updateProductDTO.getStockAmount());
+            productEntity.setCategory(updateProductDTO.getCategory());
+            productEntity.setSaleStatus(updateProductDTO.getSaleStatus());
 
 
 
@@ -105,7 +105,7 @@ public class AdminService {
 
         //2. 상품 이미지 수정
             if (multipartFilelist != null) {
-                List<ProductImageEntity> productImageEntities = imageFileRepository.findAllByProduct(product);
+                List<ProductImageEntity> productImageEntities = imageFileRepository.findAllByProductEntity(productEntity);
                 //List<ProductImage> productImages = imageFileRepository.findAllById(productId);
                 System.out.println("productImages = " + productImageEntities);
                 //기존 이미지 불러오기
@@ -127,13 +127,13 @@ public class AdminService {
                 }
 
                 // DB 삭제
-                imageFileRepository.deleteAllByProduct(product);
+                imageFileRepository.deleteAllByProduct(productEntity);
 
                 //s3와 디비에 새로운 이미지 추가
-                s3Service.upload(multipartFilelist, "static", product);
+                s3Service.upload(multipartFilelist, "static", productEntity);
 
                 //상품 정보 수정
-                adminProductRepository.save(product);
+                adminProductRepository.save(productEntity);
 
                 map.put("message", "상품 수정이 완료되었습니다.");
             } else {
@@ -164,8 +164,8 @@ public class AdminService {
                                               .createdAt(productEntity.getCreatedAt())
                                               .updatedAt(productEntity.getUpdatedAt())
                                               .stockDTO(StockDTO.builder()
-                                                                .stockAmount(productEntity.getStock().getStockAmount())
-                                                                .sellAmount(productEntity.getStock().getSellAmount())
+                                                                .stockAmount(productEntity.getStockEntity().getStockAmount())
+                                                                .sellAmount(productEntity.getStockEntity().getSellAmount())
                                                                 .build())
                                               .build();
 
@@ -206,8 +206,8 @@ public class AdminService {
                                               .createdAt(productEntity.getCreatedAt())
                                               .updatedAt(productEntity.getUpdatedAt())
                                               .stockDTO(StockDTO.builder()
-                                                                .stockAmount(productEntity.getStock().getStockAmount())
-                                                                .sellAmount(productEntity.getStock().getSellAmount())
+                                                                .stockAmount(productEntity.getStockEntity().getStockAmount())
+                                                                .sellAmount(productEntity.getStockEntity().getSellAmount())
                                                                 .build())
 
                                               .build();

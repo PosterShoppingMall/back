@@ -24,10 +24,10 @@ public class ProductImageEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private ProductEntity product;
+    private ProductEntity productEntity;
 
-    public ProductImageEntity(String imagePath, ProductEntity product) {
+    public ProductImageEntity(String imagePath, ProductEntity productEntity) {
         this.imagePath = imagePath;
-        this.product = product;
+        this.productEntity = productEntity;
     }
 }

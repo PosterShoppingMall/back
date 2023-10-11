@@ -12,14 +12,16 @@ import java.util.List;
 
 public interface ImageFileRepository extends JpaRepository<ProductImageEntity, Long> {
 
-    List<ProductImageEntity> findAllByProduct(ProductEntity product);
+    List<ProductImageEntity> findAllByProductEntity(ProductEntity productEntity);
 
     //List<ProductImage> findAllById(Long productId);
 
 
     @Modifying
-    @Query("DELETE FROM ProductImageEntity pi WHERE pi.product = ?1")
-    void deleteAllByProduct(ProductEntity product);
+    @Query("DELETE FROM ProductImageEntity pi WHERE pi.productEntity = ?1")
+    void deleteAllByProduct(ProductEntity productEntity);
+
+    List<ProductImageEntity> findByProductEntityId(Long productId);
 
 
 //    @Query("SELECT pi.imagePath FROM ProductImageEntity  pi WHERE pi.productEntity =: product AND pi.imageNum = 1")

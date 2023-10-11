@@ -19,10 +19,9 @@ public class StockEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //일대일 매핑 -> 즉시로딩을 기본 Fetch전략으로 설정
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
-    private ProductEntity product;
+    private ProductEntity productEntity;
 
     @Column(name = "stock_amount", nullable = false)
     private int stockAmount; //상품 재고

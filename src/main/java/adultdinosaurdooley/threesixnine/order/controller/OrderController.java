@@ -1,6 +1,5 @@
 package adultdinosaurdooley.threesixnine.order.controller;
 
-import adultdinosaurdooley.threesixnine.cart.dto.CartOrderDTO;
 import adultdinosaurdooley.threesixnine.cart.service.CartService;
 import adultdinosaurdooley.threesixnine.order.dto.OrderAddressDTO;
 import adultdinosaurdooley.threesixnine.order.dto.OrderRequestDTO;
@@ -11,9 +10,7 @@ import adultdinosaurdooley.threesixnine.order.service.OrderService;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import adultdinosaurdooley.threesixnine.user.jwt.JwtTokenProvider;
 import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.criterion.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,14 +27,16 @@ public class OrderController {
 
     @PostMapping("/{userId}")
     public ResponseEntity order(@PathVariable("userId") long userId,
-                                @RequestBody CartOrderDTO cartOrderDTO) {
+                                @RequestBody OrderRequestDTO orderRequestDTO) {
 
 
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() ->
                 new OrderException(OrderErrorCode.USER_NOT_FOUND));
 
 
-        Long orderId = cartService.orderCartProduct(cartOrderDTO, userEntity);
+        Long orderId = cartService.orderCartProduct(orderRequestDTO.getCartOrderDTO(), userEntity);
+        orderService.updateAddress(orderRequestDTO.getOrderAddressDTO(), orderId);
+
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
@@ -48,4 +47,14 @@ public class OrderController {
 
         return orderService.findAddress(userId);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<PurchasedProductDTO> purchaseHistoryList(
+            @PathVariable("userId") Long userId,
+            @RequestParam (name = "page", defaultValue = "1") int page,
+            @RequestParam (name = "size", required = false, defaultValue = "5") int size) {
+        return ResponseEntity.ok(orderService.purchaseHistoryList(userId, page, size));
+    }
+
+
 }
