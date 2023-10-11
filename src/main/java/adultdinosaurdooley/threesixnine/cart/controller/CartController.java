@@ -2,6 +2,7 @@ package adultdinosaurdooley.threesixnine.cart.controller;
 
 import adultdinosaurdooley.threesixnine.cart.dto.CartDTO;
 import adultdinosaurdooley.threesixnine.cart.dto.CartProductDTO;
+import adultdinosaurdooley.threesixnine.cart.dto.CartProductListDTO;
 import adultdinosaurdooley.threesixnine.cart.service.CartService;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,5 +53,11 @@ public class CartController {
         cartService.deleteCartProduct(cartProductId);
 
         return ResponseEntity.ok("상품이 성공적으로 삭제되었습니다.");
+    }
+
+    // 장바구니 조회
+    @GetMapping("/{userId}")
+    public ResponseEntity<CartProductListDTO> getCartProductList (@PathVariable("userId") long userId) {
+        return ResponseEntity.ok(cartService.findCartProductList(userId));
     }
 }

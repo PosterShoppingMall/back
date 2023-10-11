@@ -3,6 +3,7 @@ package adultdinosaurdooley.threesixnine.cart.service;
 
 import adultdinosaurdooley.threesixnine.cart.dto.CartDTO;
 import adultdinosaurdooley.threesixnine.cart.dto.CartOrderDTO;
+import adultdinosaurdooley.threesixnine.cart.dto.CartProductListDTO;
 import adultdinosaurdooley.threesixnine.cart.entity.CartEntity;
 import adultdinosaurdooley.threesixnine.cart.repository.CartRepository;
 import adultdinosaurdooley.threesixnine.cart.dto.CartProductDTO;
@@ -30,6 +31,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,9 @@ public class CartService {
             cartEntity = CartEntity.createCart(userEntity);
             cartRepository.save(cartEntity);
         }
+
+
+
 
         // 장바구니에 담을 상품을 조회
         ProductEntity productEntity = productRepository.findById(cartDTO.getProductId())

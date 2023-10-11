@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
+    // 메인페이지 상품 리스트 불러오기 (카테고리 별로 6개)
     public ResponseEntity<Map<String, List<MainPageDTO>>> findProductsforMainPage() {
         Map<String, List<MainPageDTO>> mainPageMap = new HashMap<>();
         List<ProductEntity> mainAllProductListEntity
@@ -43,6 +44,7 @@ public class ProductService {
         return ResponseEntity.status(200).body(mainPageMap);
     }
 
+    // 상품 상세페이지 상품 조회
     public ResponseEntity<ProductDetailDTO> findProductById(Long productId) {
         Optional<ProductEntity> byId = productRepository.findById(productId);
         ProductEntity productEntity = byId.get();
@@ -68,12 +70,14 @@ public class ProductService {
         return ResponseEntity.status(200).body(productDetailDTO);
     }
 
+    // 상품 검색
     public ResponseEntity<Page<ProductListDTO>> findProductByKeyword(String keyword, int size, int page, String sort) {
         Pageable pageable = setPageable(size, page, sort);
         Page<ProductEntity> productList = productRepository.findByProductNameContaining(pageable, keyword);
         return ResponseEntity.status(200).body(convertPageToDTOList(productList));
     }
 
+    // 베스트 카테고리 리스트 조회
     public ResponseEntity<Page<ProductListDTO>> findBestProductList(int size, int page) {
         Page<ProductEntity> productList;
         Pageable pageable = PageRequest.of(page, size);
@@ -81,6 +85,7 @@ public class ProductService {
         return ResponseEntity.status(200).body(convertPageToDTOList(productList));
     }
 
+    // 카테고리 별 상품 리스트 조회
     public ResponseEntity<Page<ProductListDTO>> findProductListByCategory(String category, int size, int page, String sort) {
         Pageable pageable = setPageable(size, page, sort);
         Page<ProductEntity> productList;
@@ -92,6 +97,7 @@ public class ProductService {
         return ResponseEntity.status(200).body(convertPageToDTOList(productList));
     }
 
+    // 페이지에이블 정렬 설정
     private Pageable setPageable(int size, int page, String sort) {
         Pageable pageable;
         Sort commonSort = Sort.by("id").descending();
@@ -108,11 +114,11 @@ public class ProductService {
     }
 
 
-public Page<ProductListDTO> convertPageToDTOList(Page<ProductEntity> page) {
-    List<ProductListDTO> productListDTOList = page.getContent()
-            .stream()
-            .map(this::convertToProductListDTO)
-            .collect(Collectors.toList());
+    public Page<ProductListDTO> convertPageToDTOList(Page<ProductEntity> page) {
+        List<ProductListDTO> productListDTOList = page.getContent()
+                .stream()
+                .map(this::convertToProductListDTO)
+                .collect(Collectors.toList());
 
         return new PageImpl<>(productListDTOList, page.getPageable(), page.getTotalElements());
     }
@@ -125,7 +131,7 @@ public Page<ProductListDTO> convertPageToDTOList(Page<ProductEntity> page) {
                 .productName(productEntity.getProductName())
                 .productPrice(productEntity.getProductPrice())
                 .imageUrl(url)
-                .stockAmount(productEntity.getStock().getStockAmount())
+                .stockAmount(productEntity.getStockEntity().getStockAmount())
                 .build();
         return dto;
     }
