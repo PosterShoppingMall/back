@@ -68,7 +68,7 @@ public class OrderService {
             }
         }
 
-        OrderEntity order = OrderEntity.createOrder(orderDetailEntityList, userEntity);
+        OrderEntity order = OrderEntity.createOrder(orderDetailEntityList, findId);
         orderRepository.save(order);
 
         return order.getId();

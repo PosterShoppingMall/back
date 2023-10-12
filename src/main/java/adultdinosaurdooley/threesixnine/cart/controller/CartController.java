@@ -5,12 +5,14 @@ import adultdinosaurdooley.threesixnine.cart.dto.CartProductDTO;
 import adultdinosaurdooley.threesixnine.cart.dto.CartProductListDTO;
 import adultdinosaurdooley.threesixnine.cart.service.CartService;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
+import adultdinosaurdooley.threesixnine.user.jwt.JwtTokenProvider;
 import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -22,18 +24,20 @@ public class CartController {
 
     private final CartService cartService;
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 장바구니 담기
-    @PostMapping("/{userId}")
-    public ResponseEntity<String> cart(@PathVariable("userId") @Positive long userId,
-                                        @RequestBody @Valid CartDTO addCartDTO){
+    @PostMapping
+    public ResponseEntity<String> cart(HttpServletRequest request,
+                                       @RequestBody @Valid CartDTO addCartDTO){
 
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() ->
-                new EntityNotFoundException("해당하는 사용자를 찾을 수 없습니다."));
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userId = jwtTokenProvider.getUserPK(header);
 
-        cartService.addCart(userEntity, addCartDTO);
+        cartService.addCart(userId, addCartDTO);
         return ResponseEntity.ok("상품이 장바구니에 담겼습니다.");
     }
+
 
     // 장바구니 상품 수량 변경
     @PatchMapping("/{cartProductId}")

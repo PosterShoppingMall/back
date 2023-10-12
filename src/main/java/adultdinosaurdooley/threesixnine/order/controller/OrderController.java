@@ -28,25 +28,24 @@ public class OrderController {
     private final OrderService orderService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/{userId}")
-    public ResponseEntity order(@PathVariable("userId") long userId,
+    @PostMapping
+    public ResponseEntity order(HttpServletRequest request,
                                 @RequestBody OrderRequestDTO orderRequestDTO) {
 
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userId = jwtTokenProvider.getUserPK(header);
 
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() ->
-                new OrderException(OrderErrorCode.USER_NOT_FOUND));
-
-
-        Long orderId = cartService.orderCartProduct(orderRequestDTO.getCartOrderDTO(), userEntity);
+        Long orderId = cartService.orderCartProduct(orderRequestDTO.getCartOrderDTO(), userId);
         orderService.updateAddress(orderRequestDTO.getOrderAddressDTO(), orderId);
 
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
     //주문하는 유저의 배송정보 가져오기
-    @GetMapping("/address/{userId}")
-    public ResponseEntity<OrderAddressDTO> getUserAddressInfo(@PathVariable Long userId) {
-        System.out.println("userId = " + userId);
+    @GetMapping("/address")
+    public ResponseEntity<OrderAddressDTO> getUserAddressInfo(HttpServletRequest request) {
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userId = jwtTokenProvider.getUserPK(header);
 
         return orderService.findAddress(userId);
     }
