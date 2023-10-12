@@ -65,6 +65,9 @@ public class UserEntity {
     @Column(name = "stored_name")
     private String storedName;
 
+    @Column(name = "status")
+    private Boolean status;
+
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private CartEntity cartEntity;
 

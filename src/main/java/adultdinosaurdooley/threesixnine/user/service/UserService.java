@@ -53,6 +53,7 @@ public class UserService {
 //                                                      .storedName(savedImg.get("fileName"))
                                                           .userImg("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")
                                                           .role("ROLE_USER")
+                                                          .status(true)
                                                           .build();
 
                         Long id = userRepository.save(userEntity).getId();
@@ -83,6 +84,7 @@ public class UserService {
                                                           .storedName(savedImg.get("fileName"))
                                                           .userImg(savedImg.get("accessUrl"))
                                                           .role("ROLE_USER")
+                                                          .status(true)
                                                           .build();
 
                         Long id = userRepository.save(userEntity).getId();
@@ -113,6 +115,8 @@ public class UserService {
 
             if (passwordCheck(login.get("email"), login.get("password"))) {
                 UserEntity userEntity = userRepository.findByEmail(login.get("email"));
+                if (userEntity.getStatus() == true) {
+
                 LoginTokenSaveDto loginTokenSaveDto = LoginTokenSaveDto.builder()
                                                                        .id(userEntity.getId())
                                                                        .email(userEntity.getEmail())
@@ -130,6 +134,10 @@ public class UserService {
                     refreshTokenRepository.save(refreshToken);
                 }
                 return ResponseEntity.status(200).body(token);
+                } else {
+                    result.put("message","탈퇴한 유저입니다.");
+                    return ResponseEntity.status(401).body(result);
+                }
 
             } else {
                 result.put("message", "이메일 또는 비밀번호가 일치하지 않습니다");
@@ -169,25 +177,31 @@ public class UserService {
 
     public ResponseEntity<?> delete(String id) {
         UserEntity findId = userRepository.findById(Long.valueOf(id)).get();
-        String userImgUrl = findId.getUserImg();
         RefreshToken refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
+        findId.setStatus(false);
+        refreshTokenRepository.deleteById(refreshToken.getId());
+        return ResponseEntity.status(200).body("회원탈퇴 완료");
 
-        if (userImgUrl.matches("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")) {
-            refreshTokenRepository.deleteById(refreshToken.getId());
-            userRepository.deleteById(findId.getId());
-            return ResponseEntity.status(200).body("회원탈퇴 완료");
-        } else {
-            String str = ".com/";
-            String fileName = userImgUrl.substring(userImgUrl.lastIndexOf(str) + str.length());
-            String result = userImageService.deleteImg(fileName);
-            if (result.matches("이미지 삭제")) {
-                refreshTokenRepository.deleteById(refreshToken.getId());
-                userRepository.deleteById(findId.getId());
-                return ResponseEntity.status(200).body("회원탈퇴 완료");
-            } else {
-                return ResponseEntity.badRequest().body("회원탈퇴 실패");
-            }
-        }
+//        UserEntity findId = userRepository.findById(Long.valueOf(id)).get();
+//        String userImgUrl = findId.getUserImg();
+//        RefreshToken refreshToken = refreshTokenRepository.findByUserEntity_Id(findId.getId()).get();
+//
+//        if (userImgUrl.matches("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")) {
+//            refreshTokenRepository.deleteById(refreshToken.getId());
+//            userRepository.deleteById(findId.getId());
+//            return ResponseEntity.status(200).body("회원탈퇴 완료");
+//        } else {
+//            String str = ".com/";
+//            String fileName = userImgUrl.substring(userImgUrl.lastIndexOf(str) + str.length());
+//            String result = userImageService.deleteImg(fileName);
+//            if (result.matches("이미지 삭제")) {
+//                refreshTokenRepository.deleteById(refreshToken.getId());
+//                userRepository.deleteById(findId.getId());
+//                return ResponseEntity.status(200).body("회원탈퇴 완료");
+//            } else {
+//                return ResponseEntity.badRequest().body("회원탈퇴 실패");
+//            }
+//       }
     }
 
     public ResponseEntity<?> update(String userid, UserDTO userDTO) {

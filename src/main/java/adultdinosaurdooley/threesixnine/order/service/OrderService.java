@@ -2,6 +2,7 @@ package adultdinosaurdooley.threesixnine.order.service;
 
 
 import adultdinosaurdooley.threesixnine.admin.repository.ImageFileRepository;
+import adultdinosaurdooley.threesixnine.cart.entity.CartEntity;
 import adultdinosaurdooley.threesixnine.order.dto.OrderAddressDTO;
 import adultdinosaurdooley.threesixnine.order.dto.OrderDTO;
 import adultdinosaurdooley.threesixnine.order.dto.PurchasedProductDTO;
@@ -14,7 +15,6 @@ import adultdinosaurdooley.threesixnine.order.repository.DeliveryInformationRepo
 import adultdinosaurdooley.threesixnine.order.repository.OrderDetailRepository;
 import adultdinosaurdooley.threesixnine.order.repository.OrderRepository;
 import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
-import adultdinosaurdooley.threesixnine.product.entity.ProductImageEntity;
 import adultdinosaurdooley.threesixnine.product.repository.ProductRepository;
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
 import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
@@ -41,20 +41,22 @@ public class OrderService {
     private final UserRepository userRepository;
     private final DeliveryInformationRepository deliveryInformationRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final ImageFileRepository imageFileRepository;
+
     // 장바 구니 에서 주문할 상품 데이터 를 전달 받아서 주문 생성
 
-    public Long orders(List<OrderDTO> orderDTOList, UserEntity userEntity){
+    public Long orders(List<OrderDTO> orderDTOList, String userId) {
+
+        UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
 
         // orderDTO 로 OrderDetail 생성
         List<OrderDetailEntity> orderDetailEntityList = new ArrayList<>();
 
         // 주문할 상품 리스트 만듦
-        for(OrderDTO orderDTO : orderDTOList){
+        for (OrderDTO orderDTO : orderDTOList) {
             Long productId = orderDTO.getProductId();
             System.out.println(productRepository.findById(productId));
             Optional<ProductEntity> productOptional = productRepository.findById(productId);
-            if(productOptional.isPresent()) {
+            if (productOptional.isPresent()) {
                 ProductEntity productEntity = productOptional.get();
                 System.out.println(productEntity);
 
@@ -66,106 +68,123 @@ public class OrderService {
             }
         }
 
-        OrderEntity order = OrderEntity.createOrder(orderDetailEntityList, userEntity);
+        OrderEntity order = OrderEntity.createOrder(orderDetailEntityList, findId);
         orderRepository.save(order);
 
         return order.getId();
     }
 
-    public ResponseEntity<OrderAddressDTO> findAddress(Long userId){
-        Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
+    public ResponseEntity<OrderAddressDTO> findAddress(String userId) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(Long.valueOf(userId));
 
-        if(optionalUserEntity.isPresent()) {
+        if (optionalUserEntity.isPresent()) {
             UserEntity userAddressInfo = optionalUserEntity.get();
 
             OrderAddressDTO orderAddressDTO = OrderAddressDTO.builder()
-                    .userGetName(userAddressInfo.getName())
-                    .userGetphoneNumber(userAddressInfo.getPhoneNumber())
-                    .userGetDetailAddress(userAddressInfo.getDetailAddress())
-                    .userGetRoadAddress(userAddressInfo.getRoadAddress())
-                    .userGetPostCode(userAddressInfo.getPostCode())
-                    .build();
+                                                             .userGetName(userAddressInfo.getName())
+                                                             .userGetphoneNumber(userAddressInfo.getPhoneNumber())
+                                                             .userGetDetailAddress(userAddressInfo.getDetailAddress())
+                                                             .userGetRoadAddress(userAddressInfo.getRoadAddress())
+                                                             .userGetPostCode(userAddressInfo.getPostCode())
+                                                             .build();
 
-            return ResponseEntity.status(200).body(orderAddressDTO);
+            return ResponseEntity.status(200)
+                                 .body(orderAddressDTO);
         }
-        return  null;
+        return null;
 
     }
 
 
     //배송정보 등록(주소변경)
-    public void updateAddress(OrderAddressDTO orderAddressDTO,Long orderId) {
+    public void updateAddress(OrderAddressDTO orderAddressDTO, Long orderId) {
 
 
         //orderId에 해당되는 주문을 가져와야하지 않나?
-       Optional<OrderEntity> optionalOrderEntity = orderRepository.findById(orderId);
+        Optional<OrderEntity> optionalOrderEntity = orderRepository.findById(orderId);
 
-       if(optionalOrderEntity.isPresent()){
+        if (optionalOrderEntity.isPresent()) {
             OrderEntity orderEntity = optionalOrderEntity.get();
 
-           //dto -> entity 변환
-           DeliveryInformation deliveryInformation = DeliveryInformation.builder()
-                   .orderEntity(orderEntity)
-                   .deliveryAddress(orderAddressDTO.getUserGetRoadAddress())
-                   .deliveryAddressDetail(orderAddressDTO.getUserGetDetailAddress())
-                   .deliveryPostCode(orderAddressDTO.getUserGetPostCode())
-                   .deliveryName(orderAddressDTO.getUserGetName())
-                   .deliveryPhone(orderAddressDTO.getUserGetphoneNumber())
-                   .build();
+            //dto -> entity 변환
+            DeliveryInformation deliveryInformation = DeliveryInformation.builder()
+                                                                         .orderEntity(orderEntity)
+                                                                         .deliveryAddress(orderAddressDTO.getUserGetRoadAddress())
+                                                                         .deliveryAddressDetail(orderAddressDTO.getUserGetDetailAddress())
+                                                                         .deliveryPostCode(orderAddressDTO.getUserGetPostCode())
+                                                                         .deliveryName(orderAddressDTO.getUserGetName())
+                                                                         .deliveryPhone(orderAddressDTO.getUserGetphoneNumber())
+                                                                         .build();
 
-           orderEntity.setDeliveryInformation(deliveryInformation);
-           //배송 db 저장
+            orderEntity.setDeliveryInformation(deliveryInformation);
+            //배송 db 저장
 
 
-           deliveryInformationRepository.save(deliveryInformation);
-           orderRepository.save(orderEntity);
-       }
+            deliveryInformationRepository.save(deliveryInformation);
+            orderRepository.save(orderEntity);
+        }
 
 
     }
 
-    public PurchasedProductDTO purchaseHistoryList(Long userId, int page, int size) {
+    public List<PurchasedProductDTO> purchaseHistoryList(String userId, int page, int size) {
         // 사용자 유효성 검사를 통해 사용자 확인
-        OrderEntity validateUser = validUser(userId);
+        UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
+        List<OrderEntity> validateUser = validUser(findId.getId());
 
-        Pageable pageable = PageRequest.of(page,size);
+        System.out.println("validateUser = " + validateUser);
 
-        // 주문 상세 내역 페이지 가져오기
-        Page<OrderDetailEntity> orderDetailPage = orderDetailRepository.findAllByOrderEntityId(validateUser.getId(), pageable);
+        Pageable pageable = PageRequest.of(page, size);
 
-        // 주문 상세 내역을 SellProductDto.ResponseOrderProduct로 변환
-        List<PurchasedProductDTO.ResponseOrderProduct> orderProductList = orderDetailPage.getContent().stream()
-                .map(orderDetail -> {
+//        List<PurchasedProductDTO.ResponseOrderProduct> responseOrderProductList = new ArrayList<>();
+            List<PurchasedProductDTO> responseOrderProductList = new ArrayList<>();
+        //for
+        for (OrderEntity order : validateUser) {
 
-                    String firstImagePath = String.valueOf(productRepository.findById(orderDetail.getProductEntity().getId()).get().getProductImageEntity().get(0).getImagePath());
+            // 주문 상세 내역 페이지 가져오기
+            Page<OrderDetailEntity> orderDetailPage = orderDetailRepository.findAllByOrderEntityId(order.getId(), pageable);
+
+            // 주문 상세 내역을 SellProductDto.ResponseOrderProduct로 변환
+            List<PurchasedProductDTO.ResponseOrderProduct> orderProductList = orderDetailPage.getContent().stream()
+                                              .map(orderDetail ->
+                                              { String firstImagePath =
+                                                          String.valueOf(productRepository.findById(orderDetail.getProductEntity().getId()).get()
+                                                                                          .getProductImageEntity().get(0).getImagePath());
+                                                  return PurchasedProductDTO.ResponseOrderProduct.builder()
+                                                                                                 .productId(orderDetail.getProductEntity().getId())
+                                                                                                 .productName(orderDetail.getProductEntity().getProductName())
+                                                                                                 .orderedAmount(orderDetail.getOrderedAmount())
+                                                                                                 .orderedPrice(orderDetail.getOrderedPrice())
+                                                                                                 .totalOrderedPrice(orderDetail.getOrderedAmount() * orderDetail.getOrderedPrice())
+                                                                                                 .orderedSize(orderDetail.getProductEntity().getProductSize())
+                                                                                                 .orderedImagePath(firstImagePath)
+                                                                                                 .build();}).collect(Collectors.toList());
 
 
-                    return PurchasedProductDTO.ResponseOrderProduct.builder()
-                            .productId(orderDetail.getProductEntity().getId())
-                            .productName(orderDetail.getProductEntity().getProductName())
-                            .orderedAmount(orderDetail.getOrderedAmount())
-                            .orderedPrice(orderDetail.getOrderedPrice())
-                            .totalOrderedPrice(orderDetail.getOrderedAmount() * orderDetail.getOrderedPrice())
-                            .orderedSize(orderDetail.getProductEntity().getProductSize())
-                            .orderedImagePath(firstImagePath)
-                            .build();
-                })
-                .collect(Collectors.toList());
-        // SellProductDto 객체 생성하고 반환
-        return PurchasedProductDTO.from(validateUser, orderProductList);
+
+            responseOrderProductList.add(PurchasedProductDTO.from(order, orderProductList));
+
+        }
+        return responseOrderProductList;
     }
 
     // 사용자 유효성 검사를 수행하여 사용자 반환
-    private OrderEntity validUser(Long userId) {
-        return orderRepository.findByUserEntityId(userId)
-                .orElseThrow(() -> new OrderException(OrderErrorCode.USER_NOT_FOUND));
+    private List<OrderEntity> validUser(Long userId) {
+        List<OrderEntity> orderEntityList = orderRepository.findAllByUserEntityId(userId);
+        if (orderEntityList.isEmpty()) {
+            throw new OrderException(OrderErrorCode.USER_NOT_FOUND);
+        }
+        return orderEntityList;
 
     }
 
-//    // 상품 이미지 리스트를 productId에 따라 가져오는 메서드
-//    private List<ProductImageEntity> getProductImagesForProduct(Long productId) {
-//        // ProductImageRepository를 사용하여 productId에 해당하는 ProductImage 리스트 가져오기
-//        return imageFileRepository.findByProductEntityId(productId);
+
+//    private CartEntity validateCart(Long userId) {
+//        CartEntity cartEntity = cartRepository.findByUserEntityId(userId);
+//        if (cartEntity == null) {
+//            throw new OrderException(OrderErrorCode.USER_NOT_FOUND);
+//        }
+//        return cartEntity;
 //    }
 
 }

@@ -20,6 +20,7 @@ import adultdinosaurdooley.threesixnine.product.entity.ProductEntity;
 import adultdinosaurdooley.threesixnine.product.repository.ProductRepository;
 
 import adultdinosaurdooley.threesixnine.user.entity.UserEntity;
+import adultdinosaurdooley.threesixnine.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,15 +44,18 @@ public class CartService {
     private final ProductRepository productRepository;
     private final OrderService orderService;
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
-    public Long addCart(UserEntity userEntity, CartDTO cartDTO){
+    public Long addCart(String userId, CartDTO cartDTO){
+
+        UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
 
         //유저 id로 유저의 장바구니 찾기
-        CartEntity cartEntity = cartRepository.findByUserEntityId(userEntity.getId());
+        CartEntity cartEntity = cartRepository.findByUserEntityId(findId.getId());
 
         // 장바구니가 없다면
         if(cartEntity == null){
-            cartEntity = CartEntity.createCart(userEntity);
+            cartEntity = CartEntity.createCart(findId);
             cartRepository.save(cartEntity);
         }
 
@@ -101,7 +105,7 @@ public class CartService {
         cartProductRepository.delete(cartProductEntity);
     }
 
-    public Long orderCartProduct(CartOrderDTO CartOrderDTO, UserEntity userEntity){
+    public Long orderCartProduct(CartOrderDTO CartOrderDTO, String userId){
 
 //        OrderDetailEntity orderDetailEntity = orderRepository.findByUserEntityId(userEntity.getId());
 
@@ -121,7 +125,7 @@ public class CartService {
         }
 
         // 장바구니에 담은 상품을 주문하도록 주문 로직 호출
-        Long orderId = orderService.orders(orderDTOList, userEntity);
+        Long orderId = orderService.orders(orderDTOList, userId);
 
         // 장바구니 주문한 상품 삭제
         for(Long cartOrderId: CartOrderDTO.getCartProductIdList()){
@@ -134,8 +138,11 @@ public class CartService {
         return orderId;
     }
 
-    public CartProductListDTO findCartProductList(long userId) {
-        CartEntity validateCartEntity = validateCart(userId);
+    public CartProductListDTO findCartProductList(String userId) {
+
+        UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
+
+        CartEntity validateCartEntity = validateCart(findId.getId());
 
         List<CartProductEntity> cartProductEntityList = validateCartEntity.getCartProductEntities();
 
