@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
-    Optional<OrderEntity> findByUserEntityId(Long userId);
+    List<OrderEntity> findAllByUserEntityId(Long userId);
 
 //    @Query("SELECT o FROM OrderEntity o WHERE o.userEntity.id = : findId")
 //    List<OrderEntity> findByUserEntity(UserEntity findId);

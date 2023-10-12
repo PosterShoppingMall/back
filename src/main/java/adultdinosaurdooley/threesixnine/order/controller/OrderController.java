@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/369/order")
@@ -48,12 +51,17 @@ public class OrderController {
         return orderService.findAddress(userId);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<PurchasedProductDTO> purchaseHistoryList(
-            @PathVariable("userId") Long userId,
+
+    //주문내역 조회
+    @GetMapping
+    public ResponseEntity<List<PurchasedProductDTO>> purchaseHistoryList(
+            HttpServletRequest request,
             @RequestParam (name = "page", defaultValue = "1") int page,
             @RequestParam (name = "size", required = false, defaultValue = "5") int size) {
-        return ResponseEntity.ok(orderService.purchaseHistoryList(userId, page, size));
+
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userId = jwtTokenProvider.getUserPK(header);
+        return ResponseEntity.ok(orderService.purchaseHistoryList(userId, page-1, size));
     }
 
 
