@@ -53,6 +53,7 @@ public class UserService {
 //                                                      .storedName(savedImg.get("fileName"))
                                                           .userImg("https://imagetest-tsn.s3.ap-northeast-2.amazonaws.com/defaultimg.jpg")
                                                           .role("ROLE_USER")
+                                                          .status(true)
                                                           .build();
 
                         Long id = userRepository.save(userEntity).getId();
@@ -83,6 +84,7 @@ public class UserService {
                                                           .storedName(savedImg.get("fileName"))
                                                           .userImg(savedImg.get("accessUrl"))
                                                           .role("ROLE_USER")
+                                                          .status(true)
                                                           .build();
 
                         Long id = userRepository.save(userEntity).getId();
@@ -113,6 +115,8 @@ public class UserService {
 
             if (passwordCheck(login.get("email"), login.get("password"))) {
                 UserEntity userEntity = userRepository.findByEmail(login.get("email"));
+                if (userEntity.getStatus() == true) {
+
                 LoginTokenSaveDto loginTokenSaveDto = LoginTokenSaveDto.builder()
                                                                        .id(userEntity.getId())
                                                                        .email(userEntity.getEmail())
@@ -130,6 +134,10 @@ public class UserService {
                     refreshTokenRepository.save(refreshToken);
                 }
                 return ResponseEntity.status(200).body(token);
+                } else {
+                    result.put("message","탈퇴한 유저입니다.");
+                    return ResponseEntity.status(401).body(result);
+                }
 
             } else {
                 result.put("message", "이메일 또는 비밀번호가 일치하지 않습니다");

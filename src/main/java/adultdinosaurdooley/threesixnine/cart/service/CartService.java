@@ -134,8 +134,11 @@ public class CartService {
         return orderId;
     }
 
-    public CartProductListDTO findCartProductList(long userId) {
-        CartEntity validateCartEntity = validateCart(userId);
+    public CartProductListDTO findCartProductList(String userId) {
+
+        UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
+
+        CartEntity validateCartEntity = validateCart(findId.getId());
 
         List<CartProductEntity> cartProductEntityList = validateCartEntity.getCartProductEntities();
 

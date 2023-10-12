@@ -56,8 +56,11 @@ public class CartController {
     }
 
     // 장바구니 조회
-    @GetMapping("/{userId}")
-    public ResponseEntity<CartProductListDTO> getCartProductList (@PathVariable("userId") long userId) {
+    @GetMapping
+    public ResponseEntity<CartProductListDTO> getCartProductList (HttpServletRequest request) {
+        String header = request.getHeader("X-AUTH-TOKEN");
+        String userId = jwtTokenProvider.getUserPK(header);
+
         return ResponseEntity.ok(cartService.findCartProductList(userId));
     }
 }
