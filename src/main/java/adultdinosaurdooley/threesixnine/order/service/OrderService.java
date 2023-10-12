@@ -127,7 +127,7 @@ public class OrderService {
 
     }
 
-    public PurchasedProductDTO purchaseHistoryList(Long userId, int page, int size) {
+    public List<PurchasedProductDTO> purchaseHistoryList(String userId, int page, int size) {
         // 사용자 유효성 검사를 통해 사용자 확인
         UserEntity findId = userRepository.findById(Long.valueOf(userId)).get();
         List<OrderEntity> validateUser = validUser(findId.getId());
