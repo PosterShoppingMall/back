@@ -1,6 +1,7 @@
 package adultdinosaurdooley.threesixnine.admin.service;
 
 import adultdinosaurdooley.threesixnine.admin.dto.ProductDTO;
+import adultdinosaurdooley.threesixnine.admin.dto.ProductImageDTO;
 import adultdinosaurdooley.threesixnine.admin.dto.StockDTO;
 import adultdinosaurdooley.threesixnine.admin.dto.UpdateProductDTO;
 
@@ -235,4 +236,42 @@ public class AdminService {
                              .body(productDTOList);
     }
 
+    //단일 상품 조회
+    public ResponseEntity <ProductDTO> findByProuctId(Long productId) {
+        Optional<ProductEntity> byId = adminProductRepository.findById(productId);
+        ProductEntity productEntity = byId.get();
+
+        List<String> productImageList = new ArrayList<>();
+        for (ProductImageEntity productImageEntity : productEntity.getProductImageEntity()) {
+            Map<String, Object> imageInfo = new HashMap<>();
+
+            imageInfo.put("imageNum", productImageEntity.getImageNum());
+            imageInfo.put("imagePath", productImageEntity.getImagePath());
+
+            productImageList.add(String.valueOf(imageInfo));
+            //productImages.add(productImage.getImagePath());
+        }
+
+        ProductDTO productDTO =ProductDTO
+                .builder()
+                .id(productEntity.getId())
+                .productName(productEntity.getProductName())
+                .productPrice(productEntity.getProductPrice())
+                .category(productEntity.getCategory())
+                .productContents(productEntity.getProductContents())
+                .productSize(productEntity.getProductSize())
+                .saleStatus(productEntity.getSaleStatus())
+                .createdAt(productEntity.getCreatedAt())
+                .updatedAt(productEntity.getUpdatedAt())
+                .stockDTO(StockDTO.builder()
+                                  .stockAmount(productEntity.getStockEntity().getStockAmount())
+                                  .sellAmount(productEntity.getStockEntity().getSellAmount())
+                                  .build())
+                .productImages(productImageList)
+                .build();
+
+        return ResponseEntity.status(200)
+                             .body(productDTO);
+
+    }
 }
