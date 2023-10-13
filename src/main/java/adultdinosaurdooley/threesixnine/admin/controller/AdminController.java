@@ -39,6 +39,13 @@ public class AdminController {
     }
 
 
+    //상품 단일 조회
+    @GetMapping("{product_id}")
+    public ResponseEntity<ProductDTO> getOneProduct(@PathVariable Long product_id){
+
+        return adminService.findByProuctId(product_id);
+    }
+
 
 
     //상품 수정
@@ -48,6 +55,8 @@ public class AdminController {
                                                              @RequestPart (value = "data") UpdateProductDTO updateProductDTO)throws IOException{
         return adminService.updateProduct(multipartFilelist,  product_id ,updateProductDTO);
     }
+
+
 
 
 }
